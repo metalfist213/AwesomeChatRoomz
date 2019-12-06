@@ -1,10 +1,13 @@
 package com.example.awesomechatroomz.models;
 
+import javax.inject.Inject;
+
 public class User {
     private String avatarURL;
     private String name;
     private String email;
 
+    @Inject
     public User() {
 
     }

@@ -8,6 +8,6 @@ import dagger.Component;
 
 @Component(modules={HelloWorldModule.class })
 public interface HelloWorldComponent {
-    public void inject(MainActivity activity);
+    //public void inject(MainActivity activity);
     public IHelloWorld getWorld();
 }
