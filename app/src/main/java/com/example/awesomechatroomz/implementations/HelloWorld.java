@@ -2,11 +2,9 @@ package com.example.awesomechatroomz.implementations;
 
 import android.util.Log;
 
-import com.example.awesomechatroomz.components.IHelloWorld;
+import com.example.awesomechatroomz.interfaces.IHelloWorld;
 
 import javax.inject.Inject;
-
-import dagger.Provides;
 
 
 public class HelloWorld implements IHelloWorld {

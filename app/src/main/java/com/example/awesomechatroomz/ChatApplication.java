@@ -7,4 +7,5 @@ import com.example.awesomechatroomz.components.HelloWorldComponent;
 
 public class ChatApplication extends Application {
     public HelloWorldComponent helloWorldComponent = DaggerHelloWorldComponent.create();
+    //public DaggerLoginComponent loginWorldComponent = DaggerLoginComponent.create();
 }
