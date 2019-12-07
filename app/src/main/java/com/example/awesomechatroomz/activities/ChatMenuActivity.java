@@ -10,11 +10,14 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.View;
 
 import com.example.awesomechatroomz.R;
 
 public class ChatMenuActivity extends AppCompatActivity {
+    private static final String TAG = "ChatMenuActivity";
+    
     LoginComponent comp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,22 +26,8 @@ public class ChatMenuActivity extends AppCompatActivity {
         this.comp = DaggerLoginComponent.builder().build();
 
         this.comp.inject(this);
+        Log.d(TAG, "onCreate: "+comp.getLoggedInUser());
 
-        System.out.println("New mail: "+this.comp.getLoggedInUser().getEmail());
-
-
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
     }
 
 }

@@ -1,7 +1,6 @@
 package com.example.awesomechatroomz.implementations;
 
 import android.content.Intent;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,6 +19,9 @@ import javax.inject.Inject;
 
 public class FacebookLoginMethod implements ILoginMethod {
     private CallbackManager callbackManager;
+    private User facebookUser;
+    private FacebookException exception;
+
     @Inject
     public FacebookLoginMethod() {
         /* FACEBOOK */
@@ -37,8 +39,10 @@ public class FacebookLoginMethod implements ILoginMethod {
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                // App code
-                System.out.println("SUCCESSSSSSsss...!");
+                facebookUser = new User();
+                facebookUser.setAvatarURI(Profile.getCurrentProfile().getProfilePictureUri(250, 250));
+                facebookUser.setId(Profile.getCurrentProfile().getId());
+                facebookUser.setName(Profile.getCurrentProfile().getFirstName());
             }
 
             @Override
@@ -48,7 +52,8 @@ public class FacebookLoginMethod implements ILoginMethod {
 
             @Override
             public void onError(FacebookException exception) {
-                // App code
+                System.out.println("Error HAPPENED!!!1!");
+                FacebookLoginMethod.this.exception = exception;
             }
         });
     }
@@ -56,6 +61,9 @@ public class FacebookLoginMethod implements ILoginMethod {
     @Override
     public User onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
-        return new User();
+
+        if(exception!=null) throw exception;
+
+        return facebookUser;
     }
 }

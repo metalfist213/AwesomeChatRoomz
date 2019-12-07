@@ -7,13 +7,15 @@ import com.example.awesomechatroomz.models.LoggedInUser;
 import com.example.awesomechatroomz.models.User;
 import com.example.awesomechatroomz.modules.HelloWorldModule;
 import com.example.awesomechatroomz.modules.LoggedUserModule;
+import com.example.awesomechatroomz.modules.PersistenceModule;
 
 import javax.inject.Singleton;
 
 import dagger.Component;
 
 @Singleton
-@Component(modules={LoggedUserModule.class })
+@Component(modules={LoggedUserModule.class,
+        PersistenceModule.class})
 public interface LoginComponent {
     public User getLoggedInUser();
     public void inject(MainActivity activity);

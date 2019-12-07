@@ -1,7 +1,6 @@
 package com.example.awesomechatroomz.implementations;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -78,10 +77,12 @@ public class GoogleLoginMethod implements ILoginMethod {
     private User handleSignInResult(Task<GoogleSignInAccount> completedTask) throws ApiException {
 
         GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-        User mock = new User();
+        User user = new User();
 
-        mock.setName(account.getEmail());
+        user.setName(account.getGivenName());
+        user.setId(account.getId());
+        user.setAvatarURI(account.getPhotoUrl());
 
-        return mock;
+        return user;
     }
 }
