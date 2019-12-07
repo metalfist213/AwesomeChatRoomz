@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.example.awesomechatroomz.R;
 import com.example.awesomechatroomz.components.DaggerLoginComponent;
@@ -17,11 +18,14 @@ import com.example.awesomechatroomz.implementations.LoginManager;
 import com.example.awesomechatroomz.interfaces.AsyncTaskCallback;
 import com.example.awesomechatroomz.interfaces.IHelloWorld;
 import com.example.awesomechatroomz.models.User;
+import com.example.awesomechatroomz.modules.RoomModule;
+import com.example.awesomechatroomz.room.SavedInstancesDatabase;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookException;
 import com.google.android.gms.common.api.ApiException;
 
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
@@ -43,6 +47,10 @@ public class MainActivity extends AppCompatActivity {
     @Inject
     LoginManager loginManager;
 
+
+    @Inject
+    SavedInstancesDatabase d;
+
     private List<CallbackManager> callbackManagers;
 
     @Override
@@ -52,9 +60,10 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        this.comp = DaggerLoginComponent.builder().build();
+        this.comp = DaggerLoginComponent.builder().application(getApplication()).roomModule(new RoomModule(getApplication())).build();
 
         this.comp.inject(this);
+
 
         facebookLogin.prepare(this);
         googleLoginMethod.prepare(this);
@@ -81,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(user!=null) {
             comp.getLoggedInUser().setUser(user);
-            login(user);
+            login(comp.getLoggedInUser());
         }
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -92,11 +101,13 @@ public class MainActivity extends AppCompatActivity {
         loginManager.updateUserInformation(user, new AsyncTaskCallback() {
             @Override
             public void OnPreExecute() {
+                findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
                 super.OnPreExecute();
             }
 
             @Override
             public void onPostExecute() {
+                findViewById(R.id.loadingPanel).setVisibility(View.GONE);
                 Intent chatMenu = new Intent(MainActivity.this, ChatMenuActivity.class);
                 startActivity(chatMenu);
             }

@@ -77,6 +77,7 @@ public class GoogleLoginMethod implements ILoginMethod {
     private User handleSignInResult(Task<GoogleSignInAccount> completedTask) throws ApiException {
 
         GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+
         User user = new User();
 
         user.setName(account.getGivenName());
