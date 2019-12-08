@@ -16,6 +16,7 @@ import com.squareup.picasso.Picasso;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
@@ -35,6 +36,13 @@ public class ImageManager {
         Bitmap image = Picasso.get().load(uri).get();
 
 
+        return PutFile(path, image);
+    }
+
+    public Task<Uri> PutFile(String path, Bitmap image) throws IOException {
+        StorageReference newlyAdded = reference.child(path);
+
+
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.PNG, 100, stream);
 
@@ -46,8 +54,6 @@ public class ImageManager {
                 System.out.println("PAUSED...");
             }
         });
-
-
 
         System.out.println("recycling task..");
         image.recycle();

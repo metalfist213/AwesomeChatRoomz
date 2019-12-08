@@ -2,7 +2,9 @@ package com.example.awesomechatroomz.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -11,10 +13,15 @@ import com.example.awesomechatroomz.R;
 import com.example.awesomechatroomz.activities.fragments.UserChatInputFragment;
 import com.example.awesomechatroomz.components.DaggerLoginComponent;
 import com.example.awesomechatroomz.components.LoginComponent;
+import com.example.awesomechatroomz.implementations.ActiveChatManager;
 import com.example.awesomechatroomz.implementations.ChatManager;
+import com.example.awesomechatroomz.implementations.ImageManager;
 import com.example.awesomechatroomz.models.ChatRoom;
 import com.example.awesomechatroomz.models.TextMessage;
 import com.example.awesomechatroomz.modules.RoomModule;
+
+import java.io.IOException;
+import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
@@ -22,9 +29,12 @@ public class ChatActivity extends AppCompatActivity implements UserChatInputFrag
     private LoginComponent comp;
 
     @Inject
-    ChatManager chatManager;
+    ActiveChatManager chatManager;
 
     private ChatRoom room;
+
+    @Inject
+    ImageManager imgManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +47,8 @@ public class ChatActivity extends AppCompatActivity implements UserChatInputFrag
         room = new ChatRoom();
         room.setName(getIntent().getStringExtra("chat_room"));
 
+        chatManager.setActiveChatRoom(room);
+
     }
 
 
@@ -47,20 +59,27 @@ public class ChatActivity extends AppCompatActivity implements UserChatInputFrag
 
     @Override
     public void onTextSend(String text) {
-        TextMessage message = new TextMessage();
-        message.setMessage(text);
-        message.setSender("11005167327994222499");
-
-        chatManager.sendMessage(room, message);
+        chatManager.sendMessage(text);
     }
 
     @Override
-    public void onImageUploadRequest() {
+    public void onImageUploadRequest(final Uri imageUri) {
+        try {
+            chatManager.sendImage(imageUri);
+        } catch (IOException e) {
+            new AlertDialog.Builder(this).setTitle("Image Message Failed!").setMessage("Something unexpected happened while uploading your picture..\nPlease try again.").show();
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void onCameraUploadRequest() {
-
+    public void onCameraUploadRequest(Bitmap imageBitmap) {
+        try {
+            chatManager.sendImage(imageBitmap);
+        } catch (IOException e) {
+            new AlertDialog.Builder(this).setTitle("Image Message Failed!").setMessage("Something unexpected happened while uploading your picture..\nPlease try again.").show();
+            e.printStackTrace();
+        }
     }
 
     @Override

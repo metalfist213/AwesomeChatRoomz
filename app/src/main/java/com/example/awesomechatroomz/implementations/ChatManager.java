@@ -24,52 +24,9 @@ public class ChatManager {
     private static final String TAG = "ChatManager";
     private DatabaseReference database;
 
-
     @Inject
     public ChatManager(DatabaseReference reference) {
         this.database = reference;
-    }
-
-    public void sendMessage(ChatRoom room, IMessage message) {
-        switch(message.getMessageType()) {
-            case IMessage.TEXT:
-                handleSetText(room, (TextMessage) message);
-                break;
-
-            case IMessage.IMAGE:
-                Log.e(TAG, "sendMessage: ", new IllegalArgumentException("Image send not implemented yet!"));
-                handleSendImage(room, message);
-                break;
-
-            default:
-                Log.e(TAG, "sendMessage: ", new IllegalArgumentException("Message type: "+message.getMessageType()+" not valid!"));
-        }
-    }
-
-    private void handleSetText(final ChatRoom room, final TextMessage message) {
-        final DatabaseReference chatrooms = database.child("chat_rooms");
-        chatrooms.orderByChild("name").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot shot : dataSnapshot.getChildren()) {
-                    if(shot.child("name").getValue().equals(room.getName())) {
-                        shot.getRef().child("lastUpdated").setValue(message.getTime());
-                        String key = shot.getRef().child("messages").push().getKey();
-                        shot.getRef().child("messages/"+key).setValue(message);
-
-                        return;
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    private void handleSendImage(ChatRoom room, IMessage message) {
     }
 
     public LiveData<List<ChatRoom>> getChatRooms() {

@@ -3,6 +3,7 @@ package com.example.awesomechatroomz.activities.fragments;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -110,7 +111,6 @@ public class UserChatInputFragment extends Fragment {
                     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     if(takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
                         startActivityForResult(takePictureIntent, RESULT_TAKE_PICTURE);
-                        mListener.onCameraUploadRequest();
                     }
                 }
             }
@@ -139,7 +139,6 @@ public class UserChatInputFragment extends Fragment {
                 Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
                 startActivityForResult(i, RESULT_LOAD_IMAGE);
-                mListener.onCameraUploadRequest();
             }
         });
     }
@@ -197,9 +196,13 @@ public class UserChatInputFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == RESULT_LOAD_IMAGE) {
-            System.out.println("LOAD IMAGE");
+            mListener.onImageUploadRequest(data.getData());
         } else {
-            System.out.println("LOAD CAMERA");
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+
+
+            mListener.onCameraUploadRequest(imageBitmap);
         }
     }
 
@@ -227,8 +230,8 @@ public class UserChatInputFragment extends Fragment {
 
         void onTextSend(String text);
 
-        void onImageUploadRequest();
+        void onImageUploadRequest(Uri imageUri);
 
-        void onCameraUploadRequest();
+        void onCameraUploadRequest(Bitmap imageBitmap);
     }
 }
