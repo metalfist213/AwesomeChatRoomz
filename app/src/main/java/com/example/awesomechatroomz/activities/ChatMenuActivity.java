@@ -42,6 +42,7 @@ public class ChatMenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat_menu);
         recyclerView = findViewById(R.id.chat_room_recycler_view);
         recyclerView.setHasFixedSize(true);
+
         layoutManager = new LinearLayoutManager(this);
         this.comp = DaggerLoginComponent.builder().application(getApplication()).roomModule(new RoomModule(getApplication())).build();
         this.comp.inject(this);
@@ -50,6 +51,7 @@ public class ChatMenuActivity extends AppCompatActivity {
             @Override
             public void onChatRoomClicked(ChatRoom room) {
                 System.out.println("Room clicked: "+room);
+                adapter.refresh();
             }
         });
         recyclerView.setAdapter(adapter);

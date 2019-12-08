@@ -8,16 +8,22 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.awesomechatroomz.R;
+import com.example.awesomechatroomz.implementations.ChatManager;
 import com.example.awesomechatroomz.models.ChatRoom;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
 public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.ChatViewHolder> {
-    private String[] mock = {"Chat Room","Chat Room","Chat Room","Chat Room","Chat Room","Chat Room","Chat Room","Chat Room","Chat Room","Chat Room","Chat Room","Chat Room","Chat Room","Chat Room"};
     private ChatRoomEvent itemClickListener;
+    private ChatManager manager;
+    private List<ChatRoom> chatRooms;
 
     public interface ChatRoomEvent {
         public void onChatRoomClicked(ChatRoom room);
@@ -26,6 +32,7 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.Chat
     public static class ChatViewHolder extends RecyclerView.ViewHolder {
         public TextView chatroomTitleTextView;
         public TextView chatroomDescriptionTextView;
+
         public ChatViewHolder(@NonNull View itemView) {
             super(itemView);
             this.chatroomTitleTextView = itemView.findViewById(R.id.chat_room_title);
@@ -36,9 +43,25 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.Chat
     public void setOnClickListener(ChatRoomEvent listener) {
         itemClickListener = listener;
     }
-    @Inject
-    public ChatRoomsAdapter() {//To be continued.. Pass the data from repository. (Inject)
 
+    @Inject
+    public ChatRoomsAdapter(ChatManager manager) {//To be continued.. Pass the data from repository. (Inject)
+        this.manager = manager;
+        refresh();
+    }
+
+    public void refresh() {
+        LiveData<List<ChatRoom>> rooms = manager.getChatRooms();
+
+
+        rooms.observeForever(new Observer<List<ChatRoom>>() {
+            @Override
+            public void onChanged(List<ChatRoom> chatRooms) {
+                System.out.println(chatRooms.size());
+                ChatRoomsAdapter.this.chatRooms = chatRooms;
+                ChatRoomsAdapter.this.notifyDataSetChanged();
+            }
+        });
     }
 
     @NonNull
@@ -52,29 +75,23 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.Chat
 
     @Override
     public void onBindViewHolder(@NonNull ChatViewHolder holder, int position) {
-        String current = mock[position];
+        final ChatRoom current = this.chatRooms.get(position);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ChatRoom mock = new ChatRoom();
-                mock.setName("Test Chatroom");
-                mock.setDescription("This is a standard chat room");
-                itemClickListener.onChatRoomClicked(mock);
+                itemClickListener.onChatRoomClicked(current);
             }
         });
 
-        holder.chatroomDescriptionTextView.setText("Dette er en test streng som skal simulere en chat room description. Det er ikke det vildeste, men burde være et find proof of concept.");
-        holder.chatroomTitleTextView.setText(current + " "+position);
-    }
-
-    public void bind() {
-
+        holder.chatroomDescriptionTextView.setText(current.getDescription());
+        holder.chatroomTitleTextView.setText(current.getName());
     }
 
 
     @Override
     public int getItemCount() {
-        return mock.length;
+        List<ChatRoom> chatRooms = this.chatRooms;
+        return chatRooms != null ? chatRooms.size() : 0;
     }
 }
