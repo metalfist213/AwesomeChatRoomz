@@ -1,5 +1,6 @@
 package com.example.awesomechatroomz.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.awesomechatroomz.adapters.ChatRoomsAdapter;
@@ -70,7 +71,9 @@ public class ChatMenuActivity extends AppCompatActivity {
         adapter.setOnClickListener(new ChatRoomsAdapter.ChatRoomEvent() {
             @Override
             public void onChatRoomClicked(ChatRoom room) {
-                adapter.refresh();
+                Intent chatMenu = new Intent(ChatMenuActivity.this, ChatActivity.class);
+                chatMenu.putExtra("chat_room", room.getName());
+                startActivity(chatMenu);
             }
         });
 

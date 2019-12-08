@@ -19,7 +19,7 @@ public class ChatRoom {
     public void setLastUpdated(int lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
-
+    
     public String getName() {
         return name;
     }
