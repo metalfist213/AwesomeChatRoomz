@@ -58,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
         //this.callbackManagers = new List<CallbackManager>();
         super.onCreate(savedInstanceState);
 
+        overridePendingTransition(android.R.anim.fade_out, android.R.anim.fade_in);
+
         setContentView(R.layout.activity_main);
 
         this.comp = DaggerLoginComponent.builder().application(getApplication()).roomModule(new RoomModule(getApplication())).build();

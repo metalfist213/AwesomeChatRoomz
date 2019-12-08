@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
+import android.transition.ChangeBounds;
 import android.transition.Fade;
 import android.view.Window;
 
@@ -29,6 +30,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_splash_screen);
         this.comp = DaggerLoginComponent.builder().application(getApplication()).roomModule(new RoomModule(getApplication())).build();
 
@@ -40,6 +42,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 if(user!=null) {
                     Intent chatMenu = new Intent(SplashScreenActivity.this, ChatMenuActivity.class);
                     startActivity(chatMenu);
+                    
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 } else {
                     Intent chatMenu = new Intent(SplashScreenActivity.this, MainActivity.class);
