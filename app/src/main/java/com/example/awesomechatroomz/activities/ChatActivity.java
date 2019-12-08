@@ -2,8 +2,10 @@ package com.example.awesomechatroomz.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 
 import com.example.awesomechatroomz.R;
 import com.example.awesomechatroomz.activities.fragments.UserChatInputFragment;
@@ -54,7 +56,6 @@ public class ChatActivity extends AppCompatActivity implements UserChatInputFrag
 
     @Override
     public void onImageUploadRequest() {
-
     }
 
     @Override

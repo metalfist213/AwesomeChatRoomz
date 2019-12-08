@@ -1,11 +1,15 @@
 package com.example.awesomechatroomz.activities.fragments;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +35,8 @@ public class UserChatInputFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final int RESULT_LOAD_IMAGE = 0;
+    private static final int RESULT_TAKE_PICTURE = 1;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -100,15 +106,39 @@ public class UserChatInputFragment extends Fragment {
         cameraImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onCameraUploadRequest();
+                if(getCameraPermission()) {
+                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    if(takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                        startActivityForResult(takePictureIntent, RESULT_TAKE_PICTURE);
+                        mListener.onCameraUploadRequest();
+                    }
+                }
             }
         });
+    }
+
+    private boolean getCameraPermission() {
+        if(!hasCameraPermission()) {
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, getActivity().getPackageManager().PERMISSION_GRANTED);
+
+            return hasCameraPermission();
+        } else {
+            return true;
+        }
+    }
+
+    private boolean hasCameraPermission() {
+        return ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == getActivity().getPackageManager().PERMISSION_GRANTED;
     }
 
     private void setOnUpload() {
         choosePictureImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+                startActivityForResult(i, RESULT_LOAD_IMAGE);
                 mListener.onCameraUploadRequest();
             }
         });
@@ -162,6 +192,16 @@ public class UserChatInputFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == RESULT_LOAD_IMAGE) {
+            System.out.println("LOAD IMAGE");
+        } else {
+            System.out.println("LOAD CAMERA");
+        }
+    }
 
     @Override
     public void onDetach() {
@@ -179,6 +219,8 @@ public class UserChatInputFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
+
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
