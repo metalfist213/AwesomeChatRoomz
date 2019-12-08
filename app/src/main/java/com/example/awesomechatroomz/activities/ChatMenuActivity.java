@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.View;
@@ -34,6 +35,8 @@ public class ChatMenuActivity extends AppCompatActivity {
     private static final String TAG = "ChatMenuActivity";
 
     LoginComponent comp;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,23 +44,17 @@ public class ChatMenuActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_chat_menu);
         recyclerView = findViewById(R.id.chat_room_recycler_view);
-        recyclerView.setHasFixedSize(true);
+        swipeRefreshLayout = findViewById(R.id.chat_room_swipe_refresh);
 
         layoutManager = new LinearLayoutManager(this);
+
         this.comp = DaggerLoginComponent.builder().application(getApplication()).roomModule(new RoomModule(getApplication())).build();
         this.comp.inject(this);
-        recyclerView.setLayoutManager(layoutManager);
-        adapter.setOnClickListener(new ChatRoomsAdapter.ChatRoomEvent() {
-            @Override
-            public void onChatRoomClicked(ChatRoom room) {
-                System.out.println("Room clicked: "+room);
-                adapter.refresh();
-            }
-        });
-        recyclerView.setAdapter(adapter);
+        setupRecyclerView();
+        setupSwipeRefreshView();
 
         System.out.println(layoutManager.canScrollVertically());
-        Log.d(TAG, "onCreate: "+comp.getLoggedInUser());
+        Log.d(TAG, "onCreate: " + comp.getLoggedInUser());
 
 
 /*
@@ -66,6 +63,32 @@ public class ChatMenuActivity extends AppCompatActivity {
         i.setName(this.comp.getLoggedInUser().getName());
         SavedInstancesDatabase.getInstance(this).savedInstanceDao().deleteAll();
         SavedInstancesDatabase.getInstance(this).savedInstanceDao().insert(i); */
+    }
+
+    private void setupRecyclerView() {
+        recyclerView.setLayoutManager(layoutManager);
+        adapter.setOnClickListener(new ChatRoomsAdapter.ChatRoomEvent() {
+            @Override
+            public void onChatRoomClicked(ChatRoom room) {
+                adapter.refresh();
+            }
+        });
+
+        recyclerView.setAdapter(adapter);
+    }
+
+    private void setupSwipeRefreshView() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                adapter.refresh(new ChatRoomsAdapter.ChatRoomRefreshEvent() {
+                    @Override
+                    public void refresh() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+            }
+        });
     }
 
 }

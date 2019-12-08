@@ -3,8 +3,6 @@ package com.example.awesomechatroomz.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -28,6 +26,9 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.Chat
     public interface ChatRoomEvent {
         public void onChatRoomClicked(ChatRoom room);
     }
+    public interface ChatRoomRefreshEvent {
+        public void refresh();
+    }
 
     public static class ChatViewHolder extends RecyclerView.ViewHolder {
         public TextView chatroomTitleTextView;
@@ -50,7 +51,7 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.Chat
         refresh();
     }
 
-    public void refresh() {
+    public void refresh(final ChatRoomRefreshEvent event) {
         LiveData<List<ChatRoom>> rooms = manager.getChatRooms();
 
 
@@ -60,8 +61,16 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.Chat
                 System.out.println(chatRooms.size());
                 ChatRoomsAdapter.this.chatRooms = chatRooms;
                 ChatRoomsAdapter.this.notifyDataSetChanged();
+
+                if(event!=null) {
+                    event.refresh();
+                }
             }
         });
+    }
+
+    public void refresh() {
+        refresh(null);
     }
 
     @NonNull
