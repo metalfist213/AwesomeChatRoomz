@@ -3,7 +3,7 @@ package com.example.awesomechatroomz.models;
 import java.util.List;
 
 public class ChatRoom {
-    private int lastUpdated;
+    private long lastUpdated;
     private String name;
     private List<String> usersId;
     private String description;
@@ -12,14 +12,14 @@ public class ChatRoom {
         this.usersId = usersId;
     }
 
-    public int getLastUpdated() {
+    public long getLastUpdated() {
         return lastUpdated;
     }
 
-    public void setLastUpdated(int lastUpdated) {
+    public void setLastUpdated(long lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
-    
+
     public String getName() {
         return name;
     }

@@ -7,15 +7,33 @@ import android.os.Bundle;
 
 import com.example.awesomechatroomz.R;
 import com.example.awesomechatroomz.activities.fragments.UserChatInputFragment;
+import com.example.awesomechatroomz.components.DaggerLoginComponent;
+import com.example.awesomechatroomz.components.LoginComponent;
+import com.example.awesomechatroomz.implementations.ChatManager;
+import com.example.awesomechatroomz.models.ChatRoom;
+import com.example.awesomechatroomz.models.TextMessage;
+import com.example.awesomechatroomz.modules.RoomModule;
+
+import javax.inject.Inject;
 
 public class ChatActivity extends AppCompatActivity implements UserChatInputFragment.OnFragmentInteractionListener {
+    private LoginComponent comp;
+
+    @Inject
+    ChatManager chatManager;
+
+    private ChatRoom room;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        System.out.println(getIntent().getStringExtra("chat_room"));
 
+        this.comp = DaggerLoginComponent.builder().application(getApplication()).roomModule(new RoomModule(getApplication())).build();
+        this.comp.inject(this);
+
+        room = new ChatRoom();
+        room.setName(getIntent().getStringExtra("chat_room"));
 
     }
 
@@ -27,7 +45,11 @@ public class ChatActivity extends AppCompatActivity implements UserChatInputFrag
 
     @Override
     public void onTextSend(String text) {
+        TextMessage message = new TextMessage();
+        message.setMessage(text);
+        message.setSender("11005167327994222499");
 
+        chatManager.sendMessage(room, message);
     }
 
     @Override
