@@ -82,7 +82,7 @@ public class GoogleLoginMethod implements ILoginMethod {
 
         user.setName(account.getGivenName());
         user.setId(account.getId());
-        user.setAvatarURI(account.getPhotoUrl());
+        user.setAvatarURL(account.getPhotoUrl().toString());
 
         return user;
     }

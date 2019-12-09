@@ -2,10 +2,14 @@ package com.example.awesomechatroomz.models;
 
 import android.net.Uri;
 
+import com.google.firebase.database.Exclude;
+
 import javax.inject.Inject;
 
 public class User {
     private String avatarURL;
+    @Exclude
+    private Uri avatarURI;
     private String name;
     private String id;
 
@@ -24,13 +28,17 @@ public class User {
         return avatarURL;
     }
 
+    public Uri getAvatarURI() {
+        return avatarURI;
+    }
+
 
     public void setAvatarURL(String avatarURL) {
         this.avatarURL = avatarURL;
     }
 
-    public void setAvatarURI(Uri avatarURL) {
-        this.avatarURL = avatarURL.toString();
+    public void setAvatarURI(Uri avatarURI) {
+        this.avatarURI = avatarURI;
     }
 
     public String getName() {

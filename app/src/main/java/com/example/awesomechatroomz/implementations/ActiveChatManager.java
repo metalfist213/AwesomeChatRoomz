@@ -2,15 +2,19 @@ package com.example.awesomechatroomz.implementations;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.awesomechatroomz.models.ChatRoom;
 import com.example.awesomechatroomz.models.ImageMessage;
 import com.example.awesomechatroomz.models.LoggedInUser;
 import com.example.awesomechatroomz.models.Message;
 import com.example.awesomechatroomz.models.TextMessage;
+import com.example.awesomechatroomz.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
@@ -26,7 +30,9 @@ import java.util.UUID;
 import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class ActiveChatManager {
     private static final String TAG = "ActiveChatManager";
     private DatabaseReference chatRoomPath;
@@ -37,21 +43,27 @@ public class ActiveChatManager {
     private LoggedInUser loggedInUser;
     private ImageManager imageManager;
 
+    MutableLiveData<ChatRoom> liveData;
+
     @Inject
     public ActiveChatManager(DatabaseReference reference, LoggedInUser loggedInUser, ImageManager imageManager) {
         this.database = reference;
         this.loggedInUser = loggedInUser;
         this.imageManager = imageManager;
+        this.liveData = new MutableLiveData<>();
+        this.liveData.postValue(new ChatRoom()); //Empty room for initialization.
+    }
+
+    public LiveData<ChatRoom> getChatRoomData() {
+        return liveData;
     }
 
     public void loadAmountMessages(int amount) {
+
         chatRoomPath.child("messages").orderByKey().limitToLast(amount).endAt(activeChatRoom.getMessages().get(0).getId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                System.out.println("Should end at "+activeChatRoom.getMessages());
-
-                System.out.println("Snapshot: "+dataSnapshot);
                 //Make list as a buffer.
                 ArrayList<DataSnapshot> results = new ArrayList<>();
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
@@ -59,18 +71,11 @@ public class ActiveChatManager {
                 }
                 results.remove(0); //Remove the already existing element from the list.
 
-                System.out.println("PRINTING VALUES BEFORE SAVING");
                 //Pass each in modified order.
                 for(DataSnapshot res : results) {
                     System.out.println(res);
                     saveMessageFromSnapshot(res, false);
                 }
-
-                System.out.println("Printing out new look! Reverse order");
-                for(Message message : activeChatRoom.getMessages()) {
-                    System.out.println(message);
-                }
-                System.out.println("REVERSE ORDER DONE.");
             }
 
             @Override
@@ -99,6 +104,44 @@ public class ActiveChatManager {
         else
             activeChatRoom.getMessages().add(0, message);
 
+        updateUserPool(message);
+
+
+        if(!activeChatRoom.getUserPool().containsKey(message.getSender())) {
+            updateUserPool(message);
+        } else {
+            liveData.postValue(activeChatRoom);
+        }
+        //POST FOR UI
+    }
+
+    private void updateUserPool(Message message) {
+        database.child("users/"+message.getSender()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                final User user = dataSnapshot.getValue(User.class);
+                activeChatRoom.getUserPool().put(user.getId(), user);
+
+                try {
+                    imageManager.downloadFile("avatars/" + user.getId(), new ImageManager.URLRequestListener() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            user.setAvatarURI(uri);
+                            liveData.postValue(activeChatRoom);
+                        }
+                    });
+                } catch (IOException e) {
+                    Log.e(TAG, "onDataChange: ", e);
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void listenForChanges() {
@@ -106,7 +149,6 @@ public class ActiveChatManager {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 saveMessageFromSnapshot(dataSnapshot, true);
-                loadAmountMessages(10);
             }
 
             @Override

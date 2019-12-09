@@ -40,7 +40,7 @@ public class FacebookLoginMethod implements ILoginMethod {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 facebookUser = new User();
-                facebookUser.setAvatarURI(Profile.getCurrentProfile().getProfilePictureUri(250, 250));
+                facebookUser.setAvatarURL(Profile.getCurrentProfile().getProfilePictureUri(250, 250).toString());
                 facebookUser.setId(Profile.getCurrentProfile().getId());
                 facebookUser.setName(Profile.getCurrentProfile().getFirstName());
             }

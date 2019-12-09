@@ -7,16 +7,17 @@
     tools:context=".activities.ChatActivity">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/chat_activity_swipeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/chat_room_swipe_refresh">
+        app:layout_constraintBottom_toTopOf="@+id/user_input_fragment"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/chat_room_recycler_view"
-            android:scrollbars="vertical"
+            android:id="@+id/chat_activity_recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="600dp"
-            />
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <fragment

@@ -1,6 +1,9 @@
 package com.example.awesomechatroomz.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -11,6 +14,8 @@ import android.provider.MediaStore;
 
 import com.example.awesomechatroomz.R;
 import com.example.awesomechatroomz.activities.fragments.UserChatInputFragment;
+import com.example.awesomechatroomz.adapters.ChatMessagesAdapter;
+import com.example.awesomechatroomz.adapters.ChatRoomsAdapter;
 import com.example.awesomechatroomz.components.DaggerLoginComponent;
 import com.example.awesomechatroomz.components.LoginComponent;
 import com.example.awesomechatroomz.implementations.ActiveChatManager;
@@ -41,10 +46,22 @@ public class ChatActivity extends AppCompatActivity implements UserChatInputFrag
     @Inject
     ImageManager imgManager;
 
+    @Inject
+    ChatMessagesAdapter adapter;
+
+    private RecyclerView recyclerView;
+
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private LinearLayoutManager layoutManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
+        recyclerView = findViewById(R.id.chat_activity_recyclerView);
+        swipeRefreshLayout = findViewById(R.id.chat_activity_swipeLayout);
+        layoutManager = new LinearLayoutManager(this);
 
         this.comp = DaggerLoginComponent.builder().application(getApplication()).roomModule(new RoomModule(getApplication())).build();
         this.comp.inject(this);
@@ -59,6 +76,23 @@ public class ChatActivity extends AppCompatActivity implements UserChatInputFrag
                 chatManager.setActiveChatRoom(room);
             }
         });
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                adapter.getOlderMessages(new ChatMessagesAdapter.ChatMessagesAdapterListener() {
+                    @Override
+                    public void onGetOlderDone() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+            }
+        });
+
+
+        recyclerView.setLayoutManager(layoutManager);
+
+        recyclerView.setAdapter(adapter);
     }
 
 

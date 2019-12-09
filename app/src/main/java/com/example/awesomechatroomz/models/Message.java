@@ -35,6 +35,12 @@ public abstract class Message {
         return time;
     }
 
+    public Date getDate() {
+        Date date = new Date();
+        date.setTime(time);
+        return date;
+    }
+
     public String getId() {
         return id;
     }

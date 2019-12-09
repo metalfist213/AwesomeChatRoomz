@@ -3,6 +3,7 @@ package com.example.awesomechatroomz.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,33 +12,44 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.awesomechatroomz.R;
-import com.example.awesomechatroomz.implementations.ChatManager;
+import com.example.awesomechatroomz.implementations.ActiveChatManager;
 import com.example.awesomechatroomz.models.ChatRoom;
-
-import java.util.List;
+import com.example.awesomechatroomz.models.Message;
+import com.example.awesomechatroomz.models.TextMessage;
+import com.example.awesomechatroomz.models.User;
+import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
 public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapter.ChatViewHolder> {
     private ChatRoomEvent itemClickListener;
-    private ChatManager manager;
-    private List<ChatRoom> chatRooms;
+    private ActiveChatManager activeChatManager;
+    private ChatRoom current;
 
     public interface ChatRoomEvent {
         public void onChatRoomClicked(ChatRoom room);
     }
-    public interface ChatRoomRefreshEvent {
-        public void refresh();
+    public interface ChatMessagesAdapterListener {
+        public void onGetOlderDone();
+    }
+
+    public void getOlderMessages(ChatMessagesAdapterListener listener) {
+        activeChatManager.loadAmountMessages(50);
+        listener.onGetOlderDone();
     }
 
     public static class ChatViewHolder extends RecyclerView.ViewHolder {
-        public TextView chatroomTitleTextView;
-        public TextView chatroomDescriptionTextView;
+        public TextView userName;
+        public TextView messageDate;
+        public TextView messageContent;
+        public ImageView userAvatar;
 
         public ChatViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.chatroomTitleTextView = itemView.findViewById(R.id.chat_room_title);
-            this.chatroomDescriptionTextView = itemView.findViewById(R.id.chat_room_description);
+            this.userName = itemView.findViewById(R.id.user_name_textView);
+            this.messageDate = itemView.findViewById(R.id.date_textView);
+            this.userAvatar = itemView.findViewById(R.id.avatar_imageView);
+            this.messageContent = itemView.findViewById(R.id.message_textView);
         }
     }
 
@@ -46,38 +58,33 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapte
     }
 
     @Inject
-    public ChatMessagesAdapter(ChatManager manager) {//To be continued.. Pass the data from repository. (Inject)
-        this.manager = manager;
-        refresh();
+    public ChatMessagesAdapter(ActiveChatManager manager) {//To be continued.. Pass the data from repository. (Inject)
+        this.activeChatManager = manager;
+        prepare();
     }
 
-    public void refresh(final ChatRoomRefreshEvent event) {
-        LiveData<List<ChatRoom>> rooms = manager.getChatRooms();
+    public void prepare(final ChatMessagesAdapterListener event) {
+        LiveData<ChatRoom> room = activeChatManager.getChatRoomData();
 
 
-        rooms.observeForever(new Observer<List<ChatRoom>>() {
+        room.observeForever(new Observer<ChatRoom>() {
             @Override
-            public void onChanged(List<ChatRoom> chatRooms) {
-                System.out.println(chatRooms.size());
-                ChatMessagesAdapter.this.chatRooms = chatRooms;
+            public void onChanged(ChatRoom chatRoom) {
+                current = chatRoom;
                 ChatMessagesAdapter.this.notifyDataSetChanged();
-
-                if(event!=null) {
-                    event.refresh();
-                }
             }
         });
     }
 
-    public void refresh() {
-        refresh(null);
+    public void prepare() {
+        prepare(null);
     }
 
 
     @NonNull
     @Override
     public ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_menu_layouts, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.text_chat_layout, parent, false);
         ChatViewHolder cvh = new ChatViewHolder(view);
 
         return cvh;
@@ -85,23 +92,28 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ChatViewHolder holder, int position) {
-        final ChatRoom current = this.chatRooms.get(position);
+        Message message = current.getMessages().get(position);
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                itemClickListener.onChatRoomClicked(current);
-            }
-        });
+        holder.messageDate.setText(message.getDate().toString());
 
-        holder.chatroomDescriptionTextView.setText(current.getDescription());
-        holder.chatroomTitleTextView.setText(current.getName());
+        User user = current.getUserPool().get(message.getSender());
+
+        if(user!=null) {
+            String userName = user.getId().equals(current.getUser().getId()) ? "You:" : user.getName()+":";
+            holder.userName.setText(userName);
+            Picasso.get().load(user.getAvatarURI()).resize(100, 100).into(holder.userAvatar);
+        }
+
+        switch(message.getMessageType()) {
+            case Message.TEXT:
+                holder.messageContent.setText(((TextMessage) message).getMessage());
+                break;
+        }
     }
 
 
     @Override
     public int getItemCount() {
-        List<ChatRoom> chatRooms = this.chatRooms;
-        return chatRooms != null ? chatRooms.size() : 0;
+        return current != null ? current.getMessages().size() : 0;
     }
 }

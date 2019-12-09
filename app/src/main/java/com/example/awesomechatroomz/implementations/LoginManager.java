@@ -102,7 +102,7 @@ public class LoginManager {
         protected User doInBackground(final User... users) {
             final User user = users[0];
             Task<Uri> t = null;
-            String oldUrl = new String(users[0].getAvatarURL());
+
             try {
                 t = manager.PutFile("avatars/"+user.getId(), Uri.parse(user.getAvatarURL())).addOnCompleteListener(new OnCompleteListener<Uri>() {
                     @Override
