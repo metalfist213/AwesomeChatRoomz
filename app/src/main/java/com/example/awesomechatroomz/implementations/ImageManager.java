@@ -5,6 +5,7 @@ import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.OnPausedListener;
@@ -14,6 +15,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
@@ -40,13 +42,30 @@ public class ImageManager {
         public void onSuccess(Uri uri);
     }
 
-    public void downloadFile(String path, final URLRequestListener listener) throws IOException {
+    public void downloadFile(final String path, final URLRequestListener listener) throws IOException {
         StorageReference toFile = reference.child(path);
 
         toFile.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 listener.onSuccess(uri);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Executors.newSingleThreadExecutor().submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(1000);
+                            downloadFile(path, listener);
+                        } catch (InterruptedException ex) {
+                            ex.printStackTrace();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                });
             }
         });
 

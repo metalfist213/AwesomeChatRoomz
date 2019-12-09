@@ -1,10 +1,17 @@
 package com.example.awesomechatroomz.models;
 
+import android.net.Uri;
+
+import com.google.firebase.database.Exclude;
+
 import java.util.Date;
 
 public class ImageMessage extends Message {
 
     private String imageUrl;
+
+    @Exclude
+    private Uri imageUri;
 
     public ImageMessage() {
         super();
@@ -22,5 +29,13 @@ public class ImageMessage extends Message {
     @Override
     public String toString() {
         return "Image message: "+imageUrl+" from "+getSender();
+    }
+
+    public Uri getImageUri() {
+        return imageUri;
+    }
+
+    public void setImageUri(Uri imageUri) {
+        this.imageUri = imageUri;
     }
 }

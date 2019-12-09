@@ -1,5 +1,6 @@
 package com.example.awesomechatroomz.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,19 +13,30 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.awesomechatroomz.R;
+import com.example.awesomechatroomz.implementations.ActiveChatInstance;
 import com.example.awesomechatroomz.implementations.ActiveChatManager;
 import com.example.awesomechatroomz.models.ChatRoom;
+import com.example.awesomechatroomz.models.ImageMessage;
 import com.example.awesomechatroomz.models.Message;
 import com.example.awesomechatroomz.models.TextMessage;
 import com.example.awesomechatroomz.models.User;
 import com.squareup.picasso.Picasso;
 
+import java.util.concurrent.Executors;
+
 import javax.inject.Inject;
 
 public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapter.ChatViewHolder> {
     private ChatRoomEvent itemClickListener;
-    private ActiveChatManager activeChatManager;
+    private ActiveChatInstance activeChatInstance;
     private ChatRoom current;
+
+    private static final String TAG = "ChatMessagesAdapter";
+
+    public void setActiveInstance(ActiveChatInstance activeChatInstance) {
+        Log.d(TAG, "setActiveInstance() called with: activeChatInstance.room = [" + activeChatInstance.getActiveChatRoom() + "]");
+        this.activeChatInstance = activeChatInstance;
+    }
 
     public interface ChatRoomEvent {
         public void onChatRoomClicked(ChatRoom room);
@@ -34,8 +46,11 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapte
     }
 
     public void getOlderMessages(ChatMessagesAdapterListener listener) {
-        activeChatManager.loadAmountMessages(50);
+        this.getOlderMessages();
         listener.onGetOlderDone();
+    }
+    public void getOlderMessages() {
+        activeChatInstance.loadAmountMessages(50);
     }
 
     public static class ChatViewHolder extends RecyclerView.ViewHolder {
@@ -43,6 +58,7 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapte
         public TextView messageDate;
         public TextView messageContent;
         public ImageView userAvatar;
+        public ImageView uploadedImage;
 
         public ChatViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -50,6 +66,7 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapte
             this.messageDate = itemView.findViewById(R.id.date_textView);
             this.userAvatar = itemView.findViewById(R.id.avatar_imageView);
             this.messageContent = itemView.findViewById(R.id.message_textView);
+            this.uploadedImage = itemView.findViewById(R.id.image_message_imageView);
         }
     }
 
@@ -58,18 +75,21 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapte
     }
 
     @Inject
-    public ChatMessagesAdapter(ActiveChatManager manager) {//To be continued.. Pass the data from repository. (Inject)
-        this.activeChatManager = manager;
-        prepare();
+    public ChatMessagesAdapter() {//To be continued.. Pass the data from repository. (Inject)
+
     }
 
     public void prepare(final ChatMessagesAdapterListener event) {
-        LiveData<ChatRoom> room = activeChatManager.getChatRoomData();
-
+        LiveData<ChatRoom> room = activeChatInstance.getChatRoomData();
+        Log.d(TAG, "prepare: Observers: "+room.hasActiveObservers());
 
         room.observeForever(new Observer<ChatRoom>() {
             @Override
             public void onChanged(ChatRoom chatRoom) {
+                if(chatRoom.getMessages().size() < 50) {
+                    getOlderMessages();
+                }
+
                 current = chatRoom;
                 ChatMessagesAdapter.this.notifyDataSetChanged();
             }
@@ -84,10 +104,30 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapte
     @NonNull
     @Override
     public ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.text_chat_layout, parent, false);
+        View view = null;
+        switch(viewType) {
+            case Message.TEXT:
+                Log.d(TAG, "onCreateViewHolder: About to display text.");
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.text_chat_layout, parent, false);
+                break;
+                
+            case Message.IMAGE:
+                Log.d(TAG, "onCreateViewHolder: About to display image.");
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_chat_layout, parent, false);
+                break;
+                
+            default:
+                Log.e(TAG, "onCreateViewHolder: ", new IllegalArgumentException("Message type: "+viewType+" is not supported!"));
+        }
+
         ChatViewHolder cvh = new ChatViewHolder(view);
 
         return cvh;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return current.getMessages().get(position).getMessageType();
     }
 
     @Override
@@ -107,6 +147,10 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapte
         switch(message.getMessageType()) {
             case Message.TEXT:
                 holder.messageContent.setText(((TextMessage) message).getMessage());
+                break;
+
+            case Message.IMAGE:
+                Picasso.get().load(((ImageMessage) message).getImageUri()).resize(200, 0).into(holder.uploadedImage);
                 break;
         }
     }
