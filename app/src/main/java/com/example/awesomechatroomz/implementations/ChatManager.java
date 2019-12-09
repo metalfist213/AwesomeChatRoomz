@@ -1,19 +1,14 @@
 package com.example.awesomechatroomz.implementations;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.awesomechatroomz.models.ChatRoom;
-import com.example.awesomechatroomz.models.IMessage;
-import com.example.awesomechatroomz.models.TextMessage;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.database.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,34 +2,13 @@ package com.example.awesomechatroomz.models;
 
 import java.util.Date;
 
-public class ImageMessage implements IMessage {
+public class ImageMessage extends Message {
 
-    private String sender;
-    private long time;
     private String imageUrl;
 
     public ImageMessage() {
-        time = new Date().getTime();
-    }
-
-    @Override
-    public void setSender(String userId) {
-        this.sender = userId;
-    }
-
-    @Override
-    public String getSender() {
-        return sender;
-    }
-
-    @Override
-    public int getMessageType() {
-        return IMessage.IMAGE;
-    }
-
-    @Override
-    public long getTime() {
-        return time;
+        super();
+        messageType = Message.IMAGE;
     }
 
     public String getImageUrl() {
@@ -38,5 +17,10 @@ public class ImageMessage implements IMessage {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    @Override
+    public String toString() {
+        return "Image message: "+imageUrl+" from "+getSender();
     }
 }

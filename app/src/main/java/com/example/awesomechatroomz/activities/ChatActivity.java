@@ -16,8 +16,10 @@ import com.example.awesomechatroomz.components.LoginComponent;
 import com.example.awesomechatroomz.implementations.ActiveChatManager;
 import com.example.awesomechatroomz.implementations.ChatManager;
 import com.example.awesomechatroomz.implementations.ImageManager;
+import com.example.awesomechatroomz.implementations.LoginManager;
 import com.example.awesomechatroomz.models.ChatRoom;
 import com.example.awesomechatroomz.models.TextMessage;
+import com.example.awesomechatroomz.models.User;
 import com.example.awesomechatroomz.modules.RoomModule;
 
 import java.io.IOException;
@@ -30,6 +32,9 @@ public class ChatActivity extends AppCompatActivity implements UserChatInputFrag
 
     @Inject
     ActiveChatManager chatManager;
+
+    @Inject
+    LoginManager loginManager;
 
     private ChatRoom room;
 
@@ -44,11 +49,16 @@ public class ChatActivity extends AppCompatActivity implements UserChatInputFrag
         this.comp = DaggerLoginComponent.builder().application(getApplication()).roomModule(new RoomModule(getApplication())).build();
         this.comp.inject(this);
 
-        room = new ChatRoom();
-        room.setName(getIntent().getStringExtra("chat_room"));
 
-        chatManager.setActiveChatRoom(room);
+        loginManager.AttemptAutoLogin(new LoginManager.LoginCallback() {
+            @Override
+            public void OnFinished(User user) {
+                room = new ChatRoom(user);
+                room.setName(getIntent().getStringExtra("chat_room"));
 
+                chatManager.setActiveChatRoom(room);
+            }
+        });
     }
 
 

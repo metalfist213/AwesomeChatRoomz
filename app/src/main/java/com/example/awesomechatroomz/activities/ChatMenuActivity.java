@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.example.awesomechatroomz.adapters.ChatRoomsAdapter;
 import com.example.awesomechatroomz.components.DaggerLoginComponent;
 import com.example.awesomechatroomz.components.LoginComponent;
+import com.example.awesomechatroomz.implementations.LoginManager;
 import com.example.awesomechatroomz.models.ChatRoom;
 import com.example.awesomechatroomz.modules.RoomModule;
 import com.example.awesomechatroomz.room.SavedInstancesDatabase;
@@ -33,6 +34,9 @@ public class ChatMenuActivity extends AppCompatActivity {
     @Inject
     ChatRoomsAdapter adapter;
 
+    @Inject
+    LoginManager loginManager;
+
     private static final String TAG = "ChatMenuActivity";
 
     LoginComponent comp;
@@ -54,7 +58,8 @@ public class ChatMenuActivity extends AppCompatActivity {
         setupRecyclerView();
         setupSwipeRefreshView();
 
-        System.out.println(layoutManager.canScrollVertically());
+        System.out.println("User: " +this.comp.getLoggedInUser().getId());
+
         Log.d(TAG, "onCreate: " + comp.getLoggedInUser());
 
 

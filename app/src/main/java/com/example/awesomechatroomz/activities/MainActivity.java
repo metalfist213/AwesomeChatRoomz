@@ -10,13 +10,11 @@ import android.view.View;
 
 import com.example.awesomechatroomz.R;
 import com.example.awesomechatroomz.components.DaggerLoginComponent;
-import com.example.awesomechatroomz.components.HelloWorldComponent;
 import com.example.awesomechatroomz.components.LoginComponent;
 import com.example.awesomechatroomz.implementations.FacebookLoginMethod;
 import com.example.awesomechatroomz.implementations.GoogleLoginMethod;
 import com.example.awesomechatroomz.implementations.LoginManager;
 import com.example.awesomechatroomz.interfaces.AsyncTaskCallback;
-import com.example.awesomechatroomz.interfaces.IHelloWorld;
 import com.example.awesomechatroomz.models.User;
 import com.example.awesomechatroomz.modules.RoomModule;
 import com.example.awesomechatroomz.room.SavedInstancesDatabase;
@@ -25,14 +23,12 @@ import com.facebook.FacebookException;
 import com.google.android.gms.common.api.ApiException;
 
 import java.util.List;
-import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-    HelloWorldComponent worldComponent;
 
     LoginComponent comp;
 
@@ -40,9 +36,6 @@ public class MainActivity extends AppCompatActivity {
     FacebookLoginMethod facebookLogin;
     @Inject
     GoogleLoginMethod googleLoginMethod;
-
-    @Inject
-    IHelloWorld test;
 
     @Inject
     LoginManager loginManager;

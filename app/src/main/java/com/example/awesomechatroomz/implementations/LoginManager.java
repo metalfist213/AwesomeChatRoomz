@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import androidx.annotation.NonNull;
 
 import com.example.awesomechatroomz.interfaces.AsyncTaskCallback;
+import com.example.awesomechatroomz.models.LoggedInUser;
 import com.example.awesomechatroomz.models.User;
 import com.example.awesomechatroomz.room.SavedInstancesDatabase;
 import com.example.awesomechatroomz.room.entities.SavedInstance;
@@ -28,11 +29,14 @@ public class LoginManager {
     private ImageManager manager;
     private SavedInstancesDatabase localDatabase;
 
+    private LoggedInUser loggedInUser;
+
     @Inject
-    public LoginManager(DatabaseReference database, ImageManager manager, SavedInstancesDatabase localDatabase) {
+    public LoginManager(DatabaseReference database, ImageManager manager, SavedInstancesDatabase localDatabase, LoggedInUser loggedInUser) {
         this.database = database;
         this.manager = manager;
         this.localDatabase = localDatabase;
+        this.loggedInUser = loggedInUser;
     }
 
     public void AttemptAutoLogin(final LoginCallback callback) {
@@ -46,6 +50,8 @@ public class LoginManager {
                     User user = new User();
                     user.setId(i.getDatabaseId());
                     user.setName(i.getName());
+                    loggedInUser.setUser(user);
+                    System.out.println("LOGGED in user: "+user.getId());
 
                     callback.OnFinished(user);
                 } else {

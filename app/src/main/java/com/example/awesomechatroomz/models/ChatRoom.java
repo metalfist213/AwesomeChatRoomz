@@ -1,15 +1,23 @@
 package com.example.awesomechatroomz.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChatRoom {
     private long lastUpdated;
     private String name;
+    private User user;
     private List<String> usersId;
     private String description;
+    private ArrayList messages;
+
+    public ChatRoom(User user) {
+        this.messages = new ArrayList();
+        this.user = user;
+    }
 
     public ChatRoom() {
-        this.usersId = usersId;
+        this.messages = new ArrayList();
     }
 
     public long getLastUpdated() {
@@ -47,5 +55,21 @@ public class ChatRoom {
     @Override
     public String toString() {
         return this.name+" "+this.description;
+    }
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(ArrayList<Message> messages) {
+        this.messages = messages;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
