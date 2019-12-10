@@ -302,4 +302,14 @@ public class ActiveChatInstance {
             }
         });
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof ActiveChatInstance) {
+            ActiveChatInstance other = (ActiveChatInstance) o;
+
+            return other.getActiveChatRoom().equals(this.activeChatRoom);
+        }
+        return false;
+    }
 }

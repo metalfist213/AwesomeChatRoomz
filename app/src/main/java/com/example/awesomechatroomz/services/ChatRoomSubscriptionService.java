@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.app.TaskStackBuilder;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
@@ -22,9 +23,11 @@ import com.example.awesomechatroomz.models.Message;
 import com.example.awesomechatroomz.models.TextMessage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
@@ -39,7 +42,11 @@ public class ChatRoomSubscriptionService extends Service {
 
     private NotificationManager notificationManager;
 
+    private HashMap<ChatRoom, Integer> chatRoomChannelId;
+    private int currentId;
+
     private static String CHANNEL_ID = "ACR-Service";
+
 
     @Inject
     ActiveChatManager activeChatManager;
@@ -56,43 +63,45 @@ public class ChatRoomSubscriptionService extends Service {
     public void onCreate() {
         AndroidInjection.inject(this);
 
+        chatRoomChannelId = new HashMap<>();
+
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Awesome Chat Roomz",NotificationManager.IMPORTANCE_DEFAULT);
             notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(channel);
-            System.out.println("Setting up notifcation man");
         }
 
 
         Log.d(TAG, "onCreate() called, ActiveChatManager: "+activeChatManager);
 
-        running = true;
-        Executors.newSingleThreadExecutor().submit(new Runnable() {
-            @Override
-            public void run() {
-                while(running) {
-                    try {
-                        Thread.sleep(1000);
-                        Log.i(TAG, "run: Subscribed to:");
-                        for(ActiveChatInstance i : activeChatManager.getSubscribedTo()) {
-                            if(!subscribedTo.contains(i)) {
-                                subscribe(i);
-                                subscribedTo.add(i);
-                            }
+        if(!running) {
+            running = true;
+            Executors.newSingleThreadExecutor().submit(new Runnable() {
+                @Override
+                public void run() {
+                    while(running) {
+                        try {
+                            Thread.sleep(1000);
+                            Log.i(TAG, "run: Subscribed to:");
+                            for(ActiveChatInstance i : activeChatManager.getSubscribedTo()) {
+                                if(!subscribedTo.contains(i)) {
+                                    chatRoomChannelId.put(i.getActiveChatRoom(), currentId++);
+                                    subscribe(i);
+                                    subscribedTo.add(i);
+                                }
 
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
                     }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        System.out.println("Starting Service...");
-
         return START_NOT_STICKY;
     }
 
@@ -108,10 +117,14 @@ public class ChatRoomSubscriptionService extends Service {
     }
 
     private void pushNotification(ChatRoom room, Message message) {
+        //Skip, when it is the user who wrote.
+        if(message.getSender().equals(room.getUser().getId())) return;
+
+
         String messageContent = (message.getMessageType() == Message.IMAGE) ? "an image" : ((TextMessage) message).getMessage();
 
         Intent resultIntent = new Intent(this, ChatActivity.class);
-        resultIntent.putExtra("chat_room", room.getName());
+        resultIntent.setData(Uri.parse("app://open.chat.room?chat_room="+room.getName()));
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 
@@ -129,7 +142,13 @@ public class ChatRoomSubscriptionService extends Service {
 
         System.out.println("Pushing notification...");
 
-        notificationManager.notify(2323232, notification);
+        Integer i = chatRoomChannelId.get(room);
+
+        if(i!=null) {
+            notificationManager.notify(i, notification);
+        } else {
+            notificationManager.notify(-1, notification);
+        }
     }
 
 

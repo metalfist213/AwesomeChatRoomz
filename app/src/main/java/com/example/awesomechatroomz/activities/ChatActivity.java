@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -54,6 +55,8 @@ public class ChatActivity extends AppCompatActivity implements HasAndroidInjecto
     @Inject
     ActiveChatManager chatManager;
 
+    private boolean requestedSubscribe;
+
     ActiveChatInstance chatInstance;
 
     @Inject
@@ -82,13 +85,15 @@ public class ChatActivity extends AppCompatActivity implements HasAndroidInjecto
         swipeRefreshLayout = findViewById(R.id.chat_activity_swipeLayout);
         layoutManager = new LinearLayoutManager(this);
 
+        Uri data = getIntent().getData();
+        System.out.println("INTENT DATA: " + data);
 
 
         loginManager.AttemptAutoLogin(new LoginManager.LoginCallback() {
             @Override
             public void OnFinished(User user) {
                 room = new ChatRoom(user);
-                room.setName(getIntent().getStringExtra("chat_room"));
+                room.setName(getChatRoomName());
                 chatInstance = chatManager.create(room);
                 adapter.setActiveInstance(chatInstance);
                 System.out.println("Attempt Login");
@@ -121,6 +126,14 @@ public class ChatActivity extends AppCompatActivity implements HasAndroidInjecto
         recyclerView.setAdapter(adapter);
     }
 
+    private String getChatRoomName() {
+        if (getIntent().getData() != null) {
+            return getIntent().getData().toString().split("=")[1];
+        } else {
+            return getIntent().getStringExtra("chat_room");
+        }
+    }
+
 
     @Override
     public void onFragmentInteraction(Uri uri) {
@@ -134,9 +147,29 @@ public class ChatActivity extends AppCompatActivity implements HasAndroidInjecto
     }
 
     private void subscribe() {
-        chatManager.getSubscribedTo().add(chatInstance);
-        Intent i = new Intent(new Intent(this, ChatRoomSubscriptionService.class));
-        startService(i);
+        if (!requestedSubscribe) {
+            if (chatManager.alreadySubscribedTo(this.chatInstance)) {
+                requestedSubscribe = true;
+                return;
+            }
+            AlertDialog subscribeDialog = new AlertDialog.Builder(this).setTitle("Subscribe?").setMessage("Do you want to receive notifications, when new messages arrive?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            requestedSubscribe = true;
+                            chatManager.getSubscribedTo().add(chatInstance);
+                            Intent i = new Intent(new Intent(ChatActivity.this, ChatRoomSubscriptionService.class));
+                            startService(i);
+                        }
+                    })
+                    .setNegativeButton("No thanks!", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            requestedSubscribe = true;
+                        }
+                    }).show();
+
+        }
     }
 
     @Override
@@ -163,6 +196,7 @@ public class ChatActivity extends AppCompatActivity implements HasAndroidInjecto
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
+
     public AndroidInjector androidInjector() {
         return activityDispatchingAndroidInjector;
     }

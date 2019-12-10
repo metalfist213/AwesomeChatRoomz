@@ -110,9 +110,9 @@ public class UserChatInputFragment extends Fragment {
         cameraImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(getCameraPermission()) {
+                if (getCameraPermission()) {
                     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    if(takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
                         startActivityForResult(takePictureIntent, RESULT_TAKE_PICTURE);
                     }
                 }
@@ -121,7 +121,7 @@ public class UserChatInputFragment extends Fragment {
     }
 
     private boolean getCameraPermission() {
-        if(!hasCameraPermission()) {
+        if (!hasCameraPermission()) {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, getActivity().getPackageManager().PERMISSION_GRANTED);
 
             return hasCameraPermission();
@@ -157,7 +157,7 @@ public class UserChatInputFragment extends Fragment {
         chatEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_SEND) {
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
                     sendButton.performClick();
                 }
 
@@ -199,12 +199,14 @@ public class UserChatInputFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == RESULT_LOAD_IMAGE) {
+        if (requestCode == RESULT_LOAD_IMAGE) {
             mListener.onImageUploadRequest(data.getData());
         } else {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
 
+            //User decided not to upload an image.
+            if (imageBitmap == null) return;
 
             mListener.onCameraUploadRequest(imageBitmap);
         }

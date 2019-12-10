@@ -51,6 +51,10 @@ public class ActiveChatManager {
         this.imageManager = imageManager;
     }
 
+    public boolean alreadySubscribedTo(ActiveChatInstance room) {
+        return subscribedTo.contains(room);
+    }
+
     public ActiveChatInstance create(ChatRoom room) {
         Log.d(TAG, "create() called with: room = [" + room + "]");
         ActiveChatInstance instance = new ActiveChatInstance(reference, loggedInUser, imageManager);

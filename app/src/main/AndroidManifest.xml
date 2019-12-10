@@ -17,14 +17,30 @@
         <service
             android:name=".services.ChatRoomSubscriptionService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true"/>
 
-        <activity android:name=".activities.ChatActivity" />
+
+
+         <activity android:name=".activities.ChatActivity" >
+
+
+            <intent-filter android:label="ChatRoomFilter">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="app" android:host="open.chat.room"/>
+
+            </intent-filter>
+
+        </activity>
         <activity android:name=".activities.MainActivity" />
         <activity
             android:name=".activities.ChatMenuActivity"
             android:label="@string/title_activity_chat_menu"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+
+
+
+        </activity>
         <activity
             android:name=".activities.SplashScreenActivity"
             android:theme="@style/AppTheme.NoActionBar">
