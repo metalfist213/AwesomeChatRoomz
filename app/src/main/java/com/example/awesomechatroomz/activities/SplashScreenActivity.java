@@ -53,6 +53,7 @@ public class SplashScreenActivity extends DaggerActivity implements HasAndroidIn
                     
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 } else {
+
                     Intent chatMenu = new Intent(SplashScreenActivity.this, MainActivity.class);
                     startActivity(chatMenu);
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
