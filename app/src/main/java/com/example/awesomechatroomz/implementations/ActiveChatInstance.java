@@ -29,7 +29,6 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 
-import javax.inject.Inject;
 
 public class ActiveChatInstance {
     private static final String TAG = "ActiveChatManager";
@@ -43,6 +42,13 @@ public class ActiveChatInstance {
 
     private MutableLiveData<ChatRoom> liveData;
 
+    private ChatMessagesEvent eventHandler;
+
+    private void notifyChatMessageReceived(Message message) {
+        if(eventHandler!=null) {
+            eventHandler.onMessageReceived(message);
+        }
+    }
 
     public ActiveChatInstance(DatabaseReference reference, LoggedInUser loggedInUser, ImageManager imageManager) {
         this.database = reference;
@@ -83,8 +89,12 @@ public class ActiveChatInstance {
         });
     }
 
+    public void setEventHandler(ChatMessagesEvent eventHandler) {
+        this.eventHandler = eventHandler;
+    }
+
     public interface ChatMessagesEvent {
-        public void onMessagesChanged();
+        public void onMessageReceived(Message message);
     }
 
     private void saveMessageFromSnapshot(DataSnapshot dataSnapshot, boolean first) {
@@ -106,6 +116,8 @@ public class ActiveChatInstance {
                 e.printStackTrace();
             }
         }
+        notifyChatMessageReceived(message);
+
 
         message.setId(dataSnapshot.getKey());
 

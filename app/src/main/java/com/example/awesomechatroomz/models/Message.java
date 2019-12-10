@@ -35,6 +35,7 @@ public abstract class Message {
         return time;
     }
 
+    @Exclude
     public Date getDate() {
         Date date = new Date();
         date.setTime(time);

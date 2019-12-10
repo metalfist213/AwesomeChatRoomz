@@ -26,12 +26,19 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import dagger.android.AndroidInjection;
+import dagger.android.AndroidInjector;
+import dagger.android.DaggerActivity;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.HasAndroidInjector;
 
-public class MainActivity extends AppCompatActivity {
+
+public class MainActivity extends DaggerActivity implements HasAndroidInjector {
     private static final String TAG = "MainActivity";
 
     LoginComponent comp;
-
+    @Inject
+    DispatchingAndroidInjector<Object> activityDispatchingAndroidInjector;
     @Inject
     FacebookLoginMethod facebookLogin;
     @Inject
@@ -48,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
         //this.callbackManagers = new List<CallbackManager>();
         super.onCreate(savedInstanceState);
 
@@ -55,13 +63,9 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        this.comp = DaggerLoginComponent.builder().application(getApplication()).roomModule(new RoomModule(getApplication())).build();
-
-        this.comp.inject(this);
-
-
-        facebookLogin.prepare(this);
-        googleLoginMethod.prepare(this);
+        Log.i(TAG, "onCreate: in MainActivity. Change so that login works again.");
+        //facebookLogin.prepare(this);
+        //googleLoginMethod.prepare(this);
     }
 
     @Override
@@ -84,8 +88,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(user!=null) {
-            comp.getLoggedInUser().setUser(user);
-            login(comp.getLoggedInUser());
+            login(user);
         }
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -111,5 +114,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void displayConnectionError(String title, String message) {
         new AlertDialog.Builder(this).setTitle(title).setMessage(message).show();
+    }
+
+    public AndroidInjector androidInjector() {
+        return activityDispatchingAndroidInjector;
     }
 }

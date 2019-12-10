@@ -27,10 +27,17 @@ import com.example.awesomechatroomz.R;
 
 import javax.inject.Inject;
 
-public class ChatMenuActivity extends AppCompatActivity {
+import dagger.android.AndroidInjection;
+import dagger.android.AndroidInjector;
+import dagger.android.DaggerActivity;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.HasAndroidInjector;
+
+public class ChatMenuActivity extends DaggerActivity implements HasAndroidInjector {
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
-
+    @Inject
+    DispatchingAndroidInjector<Object> activityDispatchingAndroidInjector;
     @Inject
     ChatRoomsAdapter adapter;
 
@@ -44,6 +51,7 @@ public class ChatMenuActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         overridePendingTransition(android.R.anim.fade_out, android.R.anim.fade_in);
 
@@ -53,14 +61,9 @@ public class ChatMenuActivity extends AppCompatActivity {
 
         layoutManager = new LinearLayoutManager(this);
 
-        this.comp = DaggerLoginComponent.builder().application(getApplication()).roomModule(new RoomModule(getApplication())).build();
-        this.comp.inject(this);
         setupRecyclerView();
         setupSwipeRefreshView();
 
-        System.out.println("User: " +this.comp.getLoggedInUser().getId());
-
-        Log.d(TAG, "onCreate: " + comp.getLoggedInUser());
 
 
 /*
@@ -97,6 +100,9 @@ public class ChatMenuActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+    public AndroidInjector androidInjector() {
+        return activityDispatchingAndroidInjector;
     }
 
 }

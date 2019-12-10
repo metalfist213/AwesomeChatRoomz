@@ -19,22 +19,30 @@ import com.example.awesomechatroomz.modules.RoomModule;
 
 import javax.inject.Inject;
 
-public class SplashScreenActivity extends AppCompatActivity {
+import dagger.android.AndroidInjection;
+import dagger.android.AndroidInjector;
+import dagger.android.DaggerActivity;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.HasAndroidInjector;
+
+public class SplashScreenActivity extends DaggerActivity implements HasAndroidInjector {
 
     private LoginComponent comp;
 
     @Inject
     LoginManager loginManager;
 
+    @Inject
+    DispatchingAndroidInjector<Object> activityDispatchingAndroidInjector;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_splash_screen);
-        this.comp = DaggerLoginComponent.builder().application(getApplication()).roomModule(new RoomModule(getApplication())).build();
-
-        this.comp.inject(this);
 
         this.loginManager.AttemptAutoLogin(new LoginManager.LoginCallback() {
             @Override
@@ -51,5 +59,8 @@ public class SplashScreenActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+    public AndroidInjector androidInjector() {
+        return activityDispatchingAndroidInjector;
     }
 }

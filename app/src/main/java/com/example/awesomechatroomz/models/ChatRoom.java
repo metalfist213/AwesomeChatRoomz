@@ -1,5 +1,7 @@
 package com.example.awesomechatroomz.models;
 
+import com.example.awesomechatroomz.activities.ChatActivity;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,5 +81,14 @@ public class ChatRoom {
     public void setUser(User user) {
         this.user = user;
         this.userPool.put(user.getId(), user);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if(object instanceof ChatRoom) {
+            ChatRoom other = (ChatRoom) object;
+            return other.getName().equals(this.getName());
+        }
+        return false;
     }
 }

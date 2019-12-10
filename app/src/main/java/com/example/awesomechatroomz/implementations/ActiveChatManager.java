@@ -37,6 +37,7 @@ import javax.inject.Singleton;
 public class ActiveChatManager {
     private static final String TAG = "ActiveChatManager";
     private List<ActiveChatInstance> chatInstanceList;
+    private List<ActiveChatInstance> subscribedTo;
     private DatabaseReference reference;
     private LoggedInUser loggedInUser;
     private ImageManager imageManager;
@@ -44,6 +45,7 @@ public class ActiveChatManager {
     @Inject
     public ActiveChatManager(DatabaseReference reference, LoggedInUser loggedInUser, ImageManager imageManager) {
         chatInstanceList = new ArrayList<>();
+        this.subscribedTo = new ArrayList<>();
         this.reference = reference;
         this.loggedInUser = loggedInUser;
         this.imageManager = imageManager;
@@ -63,5 +65,9 @@ public class ActiveChatManager {
             }
         }
         return null;
+    }
+
+    public List<ActiveChatInstance> getSubscribedTo() {
+        return subscribedTo;
     }
 }

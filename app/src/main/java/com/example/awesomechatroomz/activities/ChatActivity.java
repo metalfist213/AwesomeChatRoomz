@@ -1,6 +1,7 @@
 package com.example.awesomechatroomz.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -28,14 +29,27 @@ import com.example.awesomechatroomz.models.ChatRoom;
 import com.example.awesomechatroomz.models.TextMessage;
 import com.example.awesomechatroomz.models.User;
 import com.example.awesomechatroomz.modules.RoomModule;
+import com.example.awesomechatroomz.services.ChatRoomSubscriptionService;
 
 import java.io.IOException;
 import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
-public class ChatActivity extends AppCompatActivity implements UserChatInputFragment.OnFragmentInteractionListener {
+import dagger.android.AndroidInjection;
+import dagger.android.AndroidInjector;
+import dagger.android.DaggerActivity;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.HasAndroidInjector;
+import dagger.android.support.DaggerFragment;
+
+public class ChatActivity extends AppCompatActivity implements HasAndroidInjector, UserChatInputFragment.OnFragmentInteractionListener {
     private LoginComponent comp;
+    @Inject
+    DispatchingAndroidInjector<Object> activityDispatchingAndroidInjector;
+
+    @Inject
+    DispatchingAndroidInjector<DaggerFragment> fragmentDispatchingAndroidInjector;
 
     @Inject
     ActiveChatManager chatManager;
@@ -60,6 +74,7 @@ public class ChatActivity extends AppCompatActivity implements UserChatInputFrag
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
@@ -67,8 +82,6 @@ public class ChatActivity extends AppCompatActivity implements UserChatInputFrag
         swipeRefreshLayout = findViewById(R.id.chat_activity_swipeLayout);
         layoutManager = new LinearLayoutManager(this);
 
-        this.comp = DaggerLoginComponent.builder().application(getApplication()).roomModule(new RoomModule(getApplication())).build();
-        this.comp.inject(this);
 
 
         loginManager.AttemptAutoLogin(new LoginManager.LoginCallback() {
@@ -117,6 +130,13 @@ public class ChatActivity extends AppCompatActivity implements UserChatInputFrag
     @Override
     public void onTextSend(String text) {
         chatInstance.sendMessage(text);
+        subscribe();
+    }
+
+    private void subscribe() {
+        chatManager.getSubscribedTo().add(chatInstance);
+        Intent i = new Intent(new Intent(this, ChatRoomSubscriptionService.class));
+        startService(i);
     }
 
     @Override
@@ -142,5 +162,8 @@ public class ChatActivity extends AppCompatActivity implements UserChatInputFrag
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
+    }
+    public AndroidInjector androidInjector() {
+        return activityDispatchingAndroidInjector;
     }
 }

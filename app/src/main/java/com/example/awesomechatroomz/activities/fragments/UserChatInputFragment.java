@@ -23,6 +23,9 @@ import android.widget.TextView;
 
 import com.example.awesomechatroomz.R;
 
+import dagger.android.support.AndroidSupportInjection;
+import dagger.android.support.DaggerFragment;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -85,7 +88,7 @@ public class UserChatInputFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        AndroidSupportInjection.inject(this);
         View inflated = inflater.inflate(R.layout.fragment_user_chat_input, container, false);
 
         sendButton = inflated.findViewById(R.id.send_button);
@@ -182,6 +185,7 @@ public class UserChatInputFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
+        AndroidSupportInjection.inject(this);
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;

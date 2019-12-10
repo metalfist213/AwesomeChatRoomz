@@ -2,6 +2,9 @@ package com.example.awesomechatroomz.modules;
 
 
 import android.app.Application;
+import android.content.Context;
+
+import com.example.awesomechatroomz.ChatApplication;
 
 import javax.inject.Singleton;
 
@@ -10,15 +13,10 @@ import dagger.Provides;
 
 @Module
 public class AppModule {
-    private Application application;
-
-    public AppModule(Application application) {
-        this.application = application;
-    }
-
     @Provides
-    @Singleton
-    public Application providesApplication() {
-        return application;
+    public Context provideApplication(Application app) {
+        return app;
     }
+
+
 }
