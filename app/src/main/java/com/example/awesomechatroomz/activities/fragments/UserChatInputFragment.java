@@ -198,6 +198,7 @@ public class UserChatInputFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(data == null) return;
 
         if (requestCode == RESULT_LOAD_IMAGE) {
             mListener.onImageUploadRequest(data.getData());

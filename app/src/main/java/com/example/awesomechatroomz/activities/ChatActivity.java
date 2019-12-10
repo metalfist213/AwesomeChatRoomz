@@ -3,6 +3,7 @@ package com.example.awesomechatroomz.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -120,8 +121,22 @@ public class ChatActivity extends AppCompatActivity implements HasAndroidInjecto
             }
         });
 
-
+        final RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(this) {
+            @Override
+            protected int getVerticalSnapPreference() {
+                return LinearSmoothScroller.SNAP_TO_END;
+            }
+        };
         recyclerView.setLayoutManager(layoutManager);
+
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                smoothScroller.setTargetPosition(adapter.getItemCount());
+                layoutManager.startSmoothScroll(smoothScroller);
+            }
+        });
+
 
         recyclerView.setAdapter(adapter);
     }
