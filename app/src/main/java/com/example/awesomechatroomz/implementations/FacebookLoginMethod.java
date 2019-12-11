@@ -33,7 +33,7 @@ public class FacebookLoginMethod implements ILoginMethod {
 
     @Override
     public void prepare(AppCompatActivity activity) {
-        LoginButton loginButton = (LoginButton) activity.findViewById(R.id.login_button);
+        LoginButton loginButton = activity.findViewById(R.id.login_button);
         loginButton.setPermissions("email");
 
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {

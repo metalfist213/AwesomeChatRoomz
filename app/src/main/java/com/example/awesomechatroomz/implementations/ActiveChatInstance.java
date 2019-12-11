@@ -94,7 +94,7 @@ public class ActiveChatInstance {
     }
 
     public interface ChatMessagesEvent {
-        public void onMessageReceived(Message message);
+        void onMessageReceived(Message message);
     }
 
     private void saveMessageFromSnapshot(DataSnapshot dataSnapshot, boolean first) {

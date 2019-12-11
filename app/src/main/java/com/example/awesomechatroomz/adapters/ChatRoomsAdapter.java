@@ -24,10 +24,10 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.Chat
     private List<ChatRoom> chatRooms;
 
     public interface ChatRoomEvent {
-        public void onChatRoomClicked(ChatRoom room);
+        void onChatRoomClicked(ChatRoom room);
     }
     public interface ChatRoomRefreshEvent {
-        public void refresh();
+        void refresh();
     }
 
     public static class ChatViewHolder extends RecyclerView.ViewHolder {
@@ -78,9 +78,9 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.Chat
     @Override
     public ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_menu_chat, parent, false);
-        ChatViewHolder cvh = new ChatViewHolder(view);
 
-        return cvh;
+
+        return new ChatViewHolder(view);
     }
 
     @Override

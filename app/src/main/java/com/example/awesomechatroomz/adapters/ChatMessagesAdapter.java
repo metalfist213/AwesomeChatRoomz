@@ -36,10 +36,10 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapte
     }
 
     public interface ChatRoomEvent {
-        public void onChatRoomClicked(ChatRoom room);
+        void onChatRoomClicked(ChatRoom room);
     }
     public interface ChatMessagesAdapterListener {
-        public void onGetOlderDone();
+        void onGetOlderDone();
     }
 
     public void getOlderMessages(ChatMessagesAdapterListener listener) {
@@ -117,9 +117,7 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapte
                 Log.e(TAG, "onCreateViewHolder: ", new IllegalArgumentException("Message type: "+viewType+" is not supported!"));
         }
 
-        ChatViewHolder cvh = new ChatViewHolder(view);
-
-        return cvh;
+        return new ChatViewHolder(view);
     }
 
     @Override

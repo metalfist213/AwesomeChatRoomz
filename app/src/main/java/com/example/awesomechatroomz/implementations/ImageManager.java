@@ -39,7 +39,7 @@ public class ImageManager {
     }
 
     public interface URLRequestListener {
-        public void onSuccess(Uri uri);
+        void onSuccess(Uri uri);
     }
 
     public void downloadFile(final String path, final URLRequestListener listener) throws IOException {

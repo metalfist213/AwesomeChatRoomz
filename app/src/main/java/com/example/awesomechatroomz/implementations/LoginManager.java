@@ -59,7 +59,7 @@ public class LoginManager {
     }
 
     public interface LoginCallback{
-        public void OnFinished(User user);
+        void OnFinished(User user);
     }
 
 
