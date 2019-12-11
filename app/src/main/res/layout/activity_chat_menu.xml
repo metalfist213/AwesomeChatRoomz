@@ -28,6 +28,5 @@
                 />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <include layout="@layout/content_chat_menu" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

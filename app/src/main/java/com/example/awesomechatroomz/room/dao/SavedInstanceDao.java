@@ -1,12 +1,9 @@
 package com.example.awesomechatroomz.room.dao;
 
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
-import androidx.room.Update;
 
-import com.example.awesomechatroomz.models.User;
 import com.example.awesomechatroomz.room.entities.SavedInstance;
 
 import java.util.List;

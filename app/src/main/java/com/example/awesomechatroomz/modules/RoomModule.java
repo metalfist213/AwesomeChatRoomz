@@ -6,7 +6,6 @@ import androidx.room.Room;
 
 import com.example.awesomechatroomz.room.SavedInstancesDatabase;
 import com.example.awesomechatroomz.room.dao.SavedInstanceDao;
-import com.example.awesomechatroomz.room.entities.SavedInstance;
 
 import javax.inject.Singleton;
 

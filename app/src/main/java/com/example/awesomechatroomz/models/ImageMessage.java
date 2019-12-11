@@ -4,8 +4,6 @@ import android.net.Uri;
 
 import com.google.firebase.database.Exclude;
 
-import java.util.Date;
-
 public class ImageMessage extends Message {
 
     private String imageUrl;

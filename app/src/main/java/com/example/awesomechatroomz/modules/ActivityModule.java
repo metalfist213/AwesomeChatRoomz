@@ -4,7 +4,6 @@ import com.example.awesomechatroomz.activities.ChatActivity;
 import com.example.awesomechatroomz.activities.ChatMenuActivity;
 import com.example.awesomechatroomz.activities.MainActivity;
 import com.example.awesomechatroomz.activities.SplashScreenActivity;
-import com.example.awesomechatroomz.activities.fragments.UserChatInputFragment;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;

@@ -1,7 +1,5 @@
 package com.example.awesomechatroomz.models;
 
-import java.util.Date;
-
 public class TextMessage extends Message {
 
     private String message;

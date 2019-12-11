@@ -1,7 +1,5 @@
 package com.example.awesomechatroomz.models;
 
-import com.example.awesomechatroomz.activities.ChatActivity;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

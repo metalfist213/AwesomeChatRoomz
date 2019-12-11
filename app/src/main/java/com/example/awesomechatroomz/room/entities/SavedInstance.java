@@ -3,8 +3,6 @@ package com.example.awesomechatroomz.room.entities;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.google.firebase.database.annotations.NotNull;
-
 @Entity(tableName = "saved_instances")
 public class SavedInstance {
     @PrimaryKey

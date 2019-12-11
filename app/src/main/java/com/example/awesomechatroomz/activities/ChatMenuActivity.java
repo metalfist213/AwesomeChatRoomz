@@ -3,29 +3,15 @@ package com.example.awesomechatroomz.activities;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.awesomechatroomz.adapters.ChatRoomsAdapter;
-import com.example.awesomechatroomz.components.DaggerLoginComponent;
-import com.example.awesomechatroomz.components.LoginComponent;
-import com.example.awesomechatroomz.implementations.LoginManager;
-import com.example.awesomechatroomz.models.ChatRoom;
-import com.example.awesomechatroomz.modules.RoomModule;
-import com.example.awesomechatroomz.room.SavedInstancesDatabase;
-import com.example.awesomechatroomz.room.entities.SavedInstance;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.transition.Fade;
-import androidx.transition.Transition;
-
-import android.util.Log;
-import android.view.View;
 
 import com.example.awesomechatroomz.R;
+import com.example.awesomechatroomz.adapters.ChatRoomsAdapter;
+import com.example.awesomechatroomz.components.LoginComponent;
+import com.example.awesomechatroomz.implementations.LoginManager;
+import com.example.awesomechatroomz.models.ChatRoom;
 
 import javax.inject.Inject;
 
@@ -66,14 +52,6 @@ public class ChatMenuActivity extends DaggerActivity implements HasAndroidInject
         setupRecyclerView();
         setupSwipeRefreshView();
 
-
-
-/*
-        SavedInstance i = new SavedInstance();
-        i.setDatabaseId(this.comp.getLoggedInUser().getId());
-        i.setName(this.comp.getLoggedInUser().getName());
-        SavedInstancesDatabase.getInstance(this).savedInstanceDao().deleteAll();
-        SavedInstancesDatabase.getInstance(this).savedInstanceDao().insert(i); */
     }
 
     private void setupRecyclerView() {

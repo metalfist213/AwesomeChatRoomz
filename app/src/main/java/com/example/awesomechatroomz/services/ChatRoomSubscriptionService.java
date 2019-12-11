@@ -22,12 +22,9 @@ import com.example.awesomechatroomz.models.ChatRoom;
 import com.example.awesomechatroomz.models.Message;
 import com.example.awesomechatroomz.models.TextMessage;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
@@ -37,6 +34,7 @@ import dagger.android.AndroidInjection;
 
 public class ChatRoomSubscriptionService extends Service {
     private static final String TAG = "ChatRoomSubscriptionSer";
+    private static String CHANNEL_ID = "ACR-Service";
     private Intent intent;
     private Set<ActiveChatInstance> subscribedTo;
 
@@ -45,7 +43,6 @@ public class ChatRoomSubscriptionService extends Service {
     private HashMap<ChatRoom, Integer> chatRoomChannelId;
     private int currentId;
 
-    private static String CHANNEL_ID = "ACR-Service";
 
 
     @Inject
@@ -123,15 +120,15 @@ public class ChatRoomSubscriptionService extends Service {
 
         String messageContent = (message.getMessageType() == Message.IMAGE) ? "an image" : ((TextMessage) message).getMessage();
 
+        //Create intent
         Intent resultIntent = new Intent(this, ChatActivity.class);
         resultIntent.setData(Uri.parse("app://open.chat.room?chat_room="+room.getName()));
-
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-
         stackBuilder.addNextIntentWithParentStack(resultIntent);
-
         PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
+
+        //Create notification and point at intent.
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.common_google_signin_btn_icon_light)
                 .setContentTitle(room.getName())
@@ -140,10 +137,9 @@ public class ChatRoomSubscriptionService extends Service {
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true).build();
 
-        System.out.println("Pushing notification...");
 
+        //Find unique channelId of the room.
         Integer i = chatRoomChannelId.get(room);
-
         if(i!=null) {
             notificationManager.notify(i, notification);
         } else {

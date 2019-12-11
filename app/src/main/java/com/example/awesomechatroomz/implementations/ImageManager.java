@@ -78,20 +78,16 @@ public class ImageManager {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.PNG, 100, stream);
 
-        System.out.println("Starting task..");
         UploadTask t = newlyAdded.putBytes(stream.toByteArray());
         t.addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onPaused(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                System.out.println("PAUSED...");
             }
         });
 
-        System.out.println("recycling task..");
         image.recycle();
 
 
-        System.out.println("returning..");
         return newlyAdded.getDownloadUrl();
     }
 }

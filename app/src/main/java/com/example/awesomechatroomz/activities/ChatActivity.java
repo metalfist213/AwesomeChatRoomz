@@ -1,12 +1,5 @@
 package com.example.awesomechatroomz.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSmoothScroller;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,33 +7,31 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.MediaStore;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSmoothScroller;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.awesomechatroomz.R;
 import com.example.awesomechatroomz.activities.fragments.UserChatInputFragment;
 import com.example.awesomechatroomz.adapters.ChatMessagesAdapter;
-import com.example.awesomechatroomz.adapters.ChatRoomsAdapter;
-import com.example.awesomechatroomz.components.DaggerLoginComponent;
 import com.example.awesomechatroomz.components.LoginComponent;
 import com.example.awesomechatroomz.implementations.ActiveChatInstance;
 import com.example.awesomechatroomz.implementations.ActiveChatManager;
-import com.example.awesomechatroomz.implementations.ChatManager;
 import com.example.awesomechatroomz.implementations.ImageManager;
 import com.example.awesomechatroomz.implementations.LoginManager;
 import com.example.awesomechatroomz.models.ChatRoom;
-import com.example.awesomechatroomz.models.TextMessage;
 import com.example.awesomechatroomz.models.User;
-import com.example.awesomechatroomz.modules.RoomModule;
 import com.example.awesomechatroomz.services.ChatRoomSubscriptionService;
 
 import java.io.IOException;
-import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 import dagger.android.AndroidInjector;
-import dagger.android.DaggerActivity;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasAndroidInjector;
 import dagger.android.support.DaggerFragment;

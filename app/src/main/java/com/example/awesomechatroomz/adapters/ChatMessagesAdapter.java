@@ -105,12 +105,12 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapte
         switch(viewType) {
             case Message.TEXT:
                 Log.d(TAG, "onCreateViewHolder: About to display text.");
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.text_chat_layout, parent, false);
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_chat_text, parent, false);
                 break;
                 
             case Message.IMAGE:
                 Log.d(TAG, "onCreateViewHolder: About to display image.");
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_chat_layout, parent, false);
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_chat_image, parent, false);
                 break;
                 
             default:

@@ -1,22 +1,20 @@
 package com.example.awesomechatroomz.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.awesomechatroomz.R;
-import com.example.awesomechatroomz.components.DaggerLoginComponent;
 import com.example.awesomechatroomz.components.LoginComponent;
 import com.example.awesomechatroomz.implementations.FacebookLoginMethod;
 import com.example.awesomechatroomz.implementations.GoogleLoginMethod;
 import com.example.awesomechatroomz.implementations.LoginManager;
 import com.example.awesomechatroomz.interfaces.AsyncTaskCallback;
 import com.example.awesomechatroomz.models.User;
-import com.example.awesomechatroomz.modules.RoomModule;
 import com.example.awesomechatroomz.room.SavedInstancesDatabase;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookException;
@@ -28,7 +26,6 @@ import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 import dagger.android.AndroidInjector;
-import dagger.android.DaggerActivity;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasAndroidInjector;
 

@@ -1,6 +1,5 @@
 package com.example.awesomechatroomz.implementations;
 
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 
@@ -11,9 +10,7 @@ import com.example.awesomechatroomz.models.LoggedInUser;
 import com.example.awesomechatroomz.models.User;
 import com.example.awesomechatroomz.room.SavedInstancesDatabase;
 import com.example.awesomechatroomz.room.entities.SavedInstance;
-import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 
