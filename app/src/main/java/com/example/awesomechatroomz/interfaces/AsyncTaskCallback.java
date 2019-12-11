@@ -5,10 +5,6 @@ public abstract class AsyncTaskCallback {
 
     }
 
-    public void onProgressUpdate() {
-
-    }
-
     public void onPostExecute() {
 
     }

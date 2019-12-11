@@ -35,9 +35,6 @@ public interface LoginComponent extends AndroidInjector<ChatApplication> {
         LoginComponent build();
 
         LoginComponent.Builder roomModule(RoomModule roomModule);
-        LoginComponent.Builder persistenceModule(PersistenceModule roomModule);
-        LoginComponent.Builder appModule(AppModule roomModule);
     }
 
-    ChatApplication expose();
 }

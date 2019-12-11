@@ -66,21 +66,12 @@ public class UserChatInputFragment extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static UserChatInputFragment newInstance(String param1, String param2) {
         UserChatInputFragment fragment = new UserChatInputFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
     }
 
     @Override
@@ -119,6 +110,8 @@ public class UserChatInputFragment extends Fragment {
     }
 
     private boolean getCameraPermission() {
+        //Gets the camera permission if not already set.
+
         if (!hasCameraPermission()) {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, getActivity().getPackageManager().PERMISSION_GRANTED);
 
@@ -151,6 +144,8 @@ public class UserChatInputFragment extends Fragment {
                 sendText();
             }
         });
+
+        //Makes enter react as a send button.
         chatEditText.setImeActionLabel("Send!", KeyEvent.KEYCODE_ENTER);
         chatEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -167,18 +162,11 @@ public class UserChatInputFragment extends Fragment {
     private void sendText() {
         String text = chatEditText.getText().toString();
 
-        if (text != null && text != "") { //No reason to send empty text!
+        if (text.length() > 0) { //No reason to send empty text!
             mListener.onTextSend(text);
             chatEditText.getText().clear();
         }
 
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override
@@ -195,6 +183,8 @@ public class UserChatInputFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //Receives the result from either the camera or the gallery.
+        //The request code is determined by the resultCode.
         super.onActivityResult(requestCode, resultCode, data);
         if(data == null) return;
 

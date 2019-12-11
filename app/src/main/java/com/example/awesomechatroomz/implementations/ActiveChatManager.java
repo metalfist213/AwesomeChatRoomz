@@ -15,7 +15,6 @@ import javax.inject.Singleton;
 @Singleton
 public class ActiveChatManager {
     private static final String TAG = "ActiveChatManager";
-    private List<ActiveChatInstance> chatInstanceList;
     private List<ActiveChatInstance> subscribedTo;
     private DatabaseReference reference;
     private LoggedInUser loggedInUser;
@@ -23,7 +22,6 @@ public class ActiveChatManager {
 
     @Inject
     public ActiveChatManager(DatabaseReference reference, LoggedInUser loggedInUser, ImageManager imageManager) {
-        chatInstanceList = new ArrayList<>();
         this.subscribedTo = new ArrayList<>();
         this.reference = reference;
         this.loggedInUser = loggedInUser;
@@ -41,14 +39,6 @@ public class ActiveChatManager {
         return instance;
     }
 
-    public ActiveChatInstance getChatInstance(ChatRoom room) {
-        for(ActiveChatInstance activeChatInstance : chatInstanceList) { // Iterative search - not many instances will be running anyways.
-            if(activeChatInstance.getActiveChatRoom().equals(room)) {
-                return activeChatInstance;
-            }
-        }
-        return null;
-    }
 
     public List<ActiveChatInstance> getSubscribedTo() {
         return subscribedTo;

@@ -28,21 +28,21 @@ public class ImageManager {
         this.reference = reference;
     }
 
-    public Task<Uri> PutFile(String path, Uri uri) throws IOException {
+    Task<Uri> uploadFile(String path, Uri uri) throws IOException {
         StorageReference newlyAdded = reference.child(path);
 
 
         Bitmap image = Picasso.get().load(uri).get();
 
 
-        return PutFile(path, image);
+        return uploadFile(path, image);
     }
 
     public interface URLRequestListener {
         void onSuccess(Uri uri);
     }
 
-    public void downloadFile(final String path, final URLRequestListener listener) throws IOException {
+    void requestUri(final String path, final URLRequestListener listener) throws IOException {
         StorageReference toFile = reference.child(path);
 
         toFile.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -58,7 +58,7 @@ public class ImageManager {
                     public void run() {
                         try {
                             Thread.sleep(1000);
-                            downloadFile(path, listener);
+                            requestUri(path, listener);
                         } catch (InterruptedException ex) {
                             ex.printStackTrace();
                         } catch (IOException ex) {
@@ -71,7 +71,7 @@ public class ImageManager {
 
     }
 
-    public Task<Uri> PutFile(String path, Bitmap image) throws IOException {
+    Task<Uri> uploadFile(String path, Bitmap image) throws IOException {
         StorageReference newlyAdded = reference.child(path);
 
 

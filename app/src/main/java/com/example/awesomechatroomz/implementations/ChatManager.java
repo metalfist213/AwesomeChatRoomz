@@ -25,11 +25,11 @@ public class ChatManager {
     }
 
     public LiveData<List<ChatRoom>> getChatRooms() {
-        final DatabaseReference chatrooms = database.child("chat_rooms");
+        final DatabaseReference chatRooms = database.child("chat_rooms");
         final MutableLiveData<List<ChatRoom>> chatRoomsList = new MutableLiveData<>();
         chatRoomsList.setValue(new ArrayList<ChatRoom>());
 
-        chatrooms.orderByChild("lastUpdated").addListenerForSingleValueEvent(new ValueEventListener() {
+        chatRooms.orderByChild("lastUpdated").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ChatRoom room;

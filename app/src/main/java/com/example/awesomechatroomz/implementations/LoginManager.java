@@ -48,7 +48,6 @@ public class LoginManager {
                     user.setId(i.getDatabaseId());
                     user.setName(i.getName());
                     loggedInUser.setUser(user);
-                    System.out.println("LOGGED in user: "+user.getId());
 
                     callback.OnFinished(user);
                 } else {
@@ -89,7 +88,7 @@ public class LoginManager {
         private ImageManager manager;
         private DatabaseReference database;
 
-        public UpdateUserInformationTask(AsyncTaskCallback callback, ImageManager manager, DatabaseReference database) {
+        UpdateUserInformationTask(AsyncTaskCallback callback, ImageManager manager, DatabaseReference database) {
             this.callback = callback;
             this.manager = manager;
             this.database = database;
@@ -101,7 +100,7 @@ public class LoginManager {
             Task<Uri> t = null;
 
             try {
-                t = manager.PutFile("avatars/"+user.getId(), Uri.parse(user.getAvatarURL())).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                t = manager.uploadFile("avatars/"+user.getId(), Uri.parse(user.getAvatarURL())).addOnCompleteListener(new OnCompleteListener<Uri>() {
                     @Override
                     public void onComplete(@NonNull Task<Uri> task) {
                         //user.setAvatarURL(task.getResult().toString());
@@ -114,7 +113,6 @@ public class LoginManager {
                 e.printStackTrace();
             }
 
-            System.out.println("WHILE..");
             while( !t.isComplete());
 
 

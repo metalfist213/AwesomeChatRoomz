@@ -73,15 +73,11 @@ public class ChatActivity extends AppCompatActivity implements HasAndroidInjecto
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        recyclerView = findViewById(R.id.chat_activity_recyclerView);
-        swipeRefreshLayout = findViewById(R.id.chat_activity_swipeLayout);
-        layoutManager = new LinearLayoutManager(this);
+        setupRecyclerView();
+
 
         Uri data = getIntent().getData();
-
         getSupportActionBar().setTitle(getChatRoomName());
-
-
         loginManager.AttemptAutoLogin(new LoginManager.LoginCallback() {
             @Override
             public void OnFinished(User user) {
@@ -111,6 +107,12 @@ public class ChatActivity extends AppCompatActivity implements HasAndroidInjecto
                 });
             }
         });
+    }
+
+    private void setupRecyclerView() {
+        recyclerView = findViewById(R.id.chat_activity_recyclerView);
+        swipeRefreshLayout = findViewById(R.id.chat_activity_swipeLayout);
+        layoutManager = new LinearLayoutManager(this);
 
         final RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(this) {
             @Override

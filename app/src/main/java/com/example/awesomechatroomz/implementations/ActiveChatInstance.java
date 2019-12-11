@@ -64,6 +64,9 @@ public class ActiveChatInstance {
 
     public void loadAmountMessages(int amount) {
         if(activeChatRoom.getMessages().isEmpty()) return;
+        
+        //Limit to 50 entries
+        //End at the latest received message.
         chatRoomPath.child("messages").orderByKey().limitToLast(amount).endAt(activeChatRoom.getMessages().get(0).getId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -97,15 +100,42 @@ public class ActiveChatInstance {
         void onMessageReceived(Message message);
     }
 
-    private void saveMessageFromSnapshot(DataSnapshot dataSnapshot, boolean first) {
+    private void saveMessageFromSnapshot(DataSnapshot dataSnapshot, boolean last) {
+        Message message = handleSaveType(dataSnapshot);
+        
+        notifyChatMessageReceived(message);
+
+
+        message.setId(dataSnapshot.getKey());
+
+        //If message is new, place last.
+        //If message i older, place first.
+        if (last)
+            activeChatRoom.getMessages().add(message);
+        else
+            activeChatRoom.getMessages().add(0, message);
+
+        updateUserPool(message);
+
+        //Cache user information if not present.
+        if(!activeChatRoom.getUserPool().containsKey(message.getSender())) {
+            updateUserPool(message);
+        } else {
+            //POST FOR UI
+            liveData.postValue(activeChatRoom);
+        }
+    }
+
+    private Message handleSaveType(DataSnapshot dataSnapshot) {
         Message message = null;
+
         if (Objects.equals(dataSnapshot.child("messageType").getValue(int.class), Message.TEXT)) {
             message = dataSnapshot.getValue(TextMessage.class);
         } else {
             message = dataSnapshot.getValue(ImageMessage.class);
             final ImageMessage imageMessage = (ImageMessage) message;
             try {
-                imageManager.downloadFile(imageMessage.getImageUrl(), new ImageManager.URLRequestListener() {
+                imageManager.requestUri(imageMessage.getImageUrl(), new ImageManager.URLRequestListener() {
                     @Override
                     public void onSuccess(Uri uri) {
                         imageMessage.setImageUri(uri);
@@ -116,26 +146,7 @@ public class ActiveChatInstance {
                 e.printStackTrace();
             }
         }
-        notifyChatMessageReceived(message);
-
-
-        message.setId(dataSnapshot.getKey());
-
-        if (first)
-            activeChatRoom.getMessages().add(message);
-        else
-            activeChatRoom.getMessages().add(0, message);
-
-        updateUserPool(message);
-
-        Log.d(TAG, "saveMessageFromSnapshot: Message Received: "+message);
-        Log.d(TAG, "saveMessageFromSnapshot: Has Observers "+liveData.hasActiveObservers());
-        if(!activeChatRoom.getUserPool().containsKey(message.getSender())) {
-            updateUserPool(message);
-        } else {
-            liveData.postValue(activeChatRoom);
-        }
-        //POST FOR UI
+        return message;
     }
 
     private void updateUserPool(Message message) {
@@ -146,7 +157,7 @@ public class ActiveChatInstance {
                 activeChatRoom.getUserPool().put(user.getId(), user);
 
                 try {
-                    imageManager.downloadFile("avatars/" + user.getId(), new ImageManager.URLRequestListener() {
+                    imageManager.requestUri("avatars/" + user.getId(), new ImageManager.URLRequestListener() {
                         @Override
                         public void onSuccess(Uri uri) {
                             user.setAvatarURI(uri);
@@ -237,7 +248,7 @@ public class ActiveChatInstance {
             @Override
             public void run() {
                 try {
-                    imageManager.PutFile(imageMessage.getImageUrl(), uri).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    imageManager.uploadFile(imageMessage.getImageUrl(), uri).addOnCompleteListener(new OnCompleteListener<Uri>() {
                         @Override
                         public void onComplete(@NonNull Task<Uri> task) {
                             handleSendMessage(imageMessage);
@@ -258,7 +269,7 @@ public class ActiveChatInstance {
             @Override
             public void run() {
                 try {
-                    imageManager.PutFile(imageMessage.getImageUrl(), bit).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    imageManager.uploadFile(imageMessage.getImageUrl(), bit).addOnCompleteListener(new OnCompleteListener<Uri>() {
                         @Override
                         public void onComplete(@NonNull Task<Uri> task) {
                             handleSendMessage(imageMessage);

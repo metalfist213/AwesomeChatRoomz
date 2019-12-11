@@ -32,7 +32,7 @@
             </intent-filter>
 
         </activity>
-        <activity android:name=".activities.MainActivity"
+        <activity android:name=".activities.LoginScreenActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.ChatMenuActivity"

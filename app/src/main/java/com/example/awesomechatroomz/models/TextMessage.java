@@ -9,10 +9,6 @@ public class TextMessage extends Message {
         messageType = Message.TEXT;
     }
 
-    public TextMessage(String message) {
-        super();
-        this.message = message;
-    }
     public String getMessage() {
         return message;
     }

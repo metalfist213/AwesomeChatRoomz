@@ -2,7 +2,7 @@ package com.example.awesomechatroomz.modules;
 
 import com.example.awesomechatroomz.activities.ChatActivity;
 import com.example.awesomechatroomz.activities.ChatMenuActivity;
-import com.example.awesomechatroomz.activities.MainActivity;
+import com.example.awesomechatroomz.activities.LoginScreenActivity;
 import com.example.awesomechatroomz.activities.SplashScreenActivity;
 
 import dagger.Module;
@@ -13,7 +13,7 @@ public abstract class ActivityModule {
     @ContributesAndroidInjector
     abstract SplashScreenActivity contributeSplashScreenActivity();
     @ContributesAndroidInjector
-    abstract MainActivity contributeMainActivity();
+    abstract LoginScreenActivity contributeMainActivity();
     @ContributesAndroidInjector
     abstract ChatMenuActivity contributeChatMenuActivity();
     @ContributesAndroidInjector(modules = {FragmentModule.class})

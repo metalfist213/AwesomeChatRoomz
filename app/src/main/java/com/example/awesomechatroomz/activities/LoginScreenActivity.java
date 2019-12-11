@@ -30,8 +30,8 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasAndroidInjector;
 
 
-public class MainActivity extends AppCompatActivity implements HasAndroidInjector {
-    private static final String TAG = "MainActivity";
+public class LoginScreenActivity extends AppCompatActivity implements HasAndroidInjector {
+    private static final String TAG = "LoginScreenActivity";
 
     LoginComponent comp;
     @Inject
@@ -57,9 +57,9 @@ public class MainActivity extends AppCompatActivity implements HasAndroidInjecto
         super.onCreate(savedInstanceState);
 
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login_screen);
 
-        Log.i(TAG, "onCreate: in MainActivity. Change so that login works again.");
+        Log.i(TAG, "onCreate: in LoginScreenActivity. Change so that login works again.");
         facebookLogin.prepare(this);
         googleLoginMethod.prepare(this);
     }
@@ -67,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements HasAndroidInjecto
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         User user = null;
+
+        //Look for Facebook results.
         try {
             user = facebookLogin.onActivityResult(requestCode, resultCode, data);
         } catch(FacebookException e) {
@@ -74,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements HasAndroidInjecto
             Log.d(TAG, "onActivityResult: FacebookException happened. Check if you're connected to the internet.\n"+e);
         }
 
+        //If the user is not logged in using Facebook, Google is tried.
         if(user==null) {
             try {
                 user = googleLoginMethod.onActivityResult(requestCode, resultCode, data);
@@ -83,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements HasAndroidInjecto
             }
         }
 
+        //If user is found, he is logged in through the system.
         if(user!=null) {
             login(user);
         }
@@ -102,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements HasAndroidInjecto
             @Override
             public void onPostExecute() {
                 findViewById(R.id.loadingPanel).setVisibility(View.GONE);
-                Intent chatMenu = new Intent(MainActivity.this, ChatMenuActivity.class);
+                Intent chatMenu = new Intent(LoginScreenActivity.this, ChatMenuActivity.class);
                 startActivity(chatMenu);
             }
         });

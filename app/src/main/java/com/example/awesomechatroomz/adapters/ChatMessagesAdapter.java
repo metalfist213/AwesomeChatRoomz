@@ -24,7 +24,6 @@ import com.squareup.picasso.Picasso;
 import javax.inject.Inject;
 
 public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapter.ChatViewHolder> {
-    private ChatRoomEvent itemClickListener;
     private ActiveChatInstance activeChatInstance;
     private ChatRoom current;
 
@@ -35,9 +34,6 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapte
         this.activeChatInstance = activeChatInstance;
     }
 
-    public interface ChatRoomEvent {
-        void onChatRoomClicked(ChatRoom room);
-    }
     public interface ChatMessagesAdapterListener {
         void onGetOlderDone();
     }
@@ -67,9 +63,6 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapte
         }
     }
 
-    public void setOnClickListener(ChatRoomEvent listener) {
-        itemClickListener = listener;
-    }
 
     @Inject
     public ChatMessagesAdapter() {//To be continued.. Pass the data from repository. (Inject)
@@ -80,6 +73,7 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapte
         LiveData<ChatRoom> room = activeChatInstance.getChatRoomData();
         Log.d(TAG, "prepare: Observers: "+room.hasActiveObservers());
 
+        //Subscribes to the chat room for changes.
         room.observeForever(new Observer<ChatRoom>() {
             @Override
             public void onChanged(ChatRoom chatRoom) {
@@ -102,6 +96,8 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapte
     @Override
     public ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = null;
+
+        //Using the message type, the view is chosen.
         switch(viewType) {
             case Message.TEXT:
                 Log.d(TAG, "onCreateViewHolder: About to display text.");
@@ -128,17 +124,18 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapte
     @Override
     public void onBindViewHolder(@NonNull ChatViewHolder holder, int position) {
         Message message = current.getMessages().get(position);
-
         holder.messageDate.setText(message.getDate().toString());
 
         User user = current.getUserPool().get(message.getSender());
 
         if(user!=null) {
+            //If the message is from you, it writes "you:" instead of "Name:".
             String userName = user.getId().equals(current.getUser().getId()) ? "You:" : user.getName()+":";
             holder.userName.setText(userName);
             Picasso.get().load(user.getAvatarURI()).resize(100, 100).into(holder.userAvatar);
         }
 
+        //Sets content of the view using the message type.
         switch(message.getMessageType()) {
             case Message.TEXT:
                 holder.messageContent.setText(((TextMessage) message).getMessage());

@@ -40,11 +40,9 @@ public class GoogleLoginMethod implements ILoginMethod {
         this.activity = activity;
     }
 
-    public void clicked(View v) {
-        switch (v.getId()) {
-            case R.id.sign_in_button:
-                signIn();
-                break;
+    private void clicked(View v) {
+        if (v.getId() == R.id.sign_in_button) {
+            signIn();
             // ...
         }
     }

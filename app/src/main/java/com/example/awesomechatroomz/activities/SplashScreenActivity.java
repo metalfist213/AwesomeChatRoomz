@@ -39,13 +39,12 @@ public class SplashScreenActivity extends DaggerActivity implements HasAndroidIn
         this.loginManager.AttemptAutoLogin(new LoginManager.LoginCallback() {
             @Override
             public void OnFinished(User user) {
-                if(user!=null) {
+                if(user!=null) { //Send to chat room if logged in.
                     Intent chatMenu = new Intent(SplashScreenActivity.this, ChatMenuActivity.class);
                     startActivity(chatMenu);
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                } else {
-
-                    Intent chatMenu = new Intent(SplashScreenActivity.this, MainActivity.class);
+                } else { //Send to login screen.
+                    Intent chatMenu = new Intent(SplashScreenActivity.this, LoginScreenActivity.class);
                     startActivity(chatMenu);
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 }
