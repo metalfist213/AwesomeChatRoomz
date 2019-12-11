@@ -33,7 +33,7 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasAndroidInjector;
 
 
-public class MainActivity extends DaggerActivity implements HasAndroidInjector {
+public class MainActivity extends AppCompatActivity implements HasAndroidInjector {
     private static final String TAG = "MainActivity";
 
     LoginComponent comp;
@@ -59,13 +59,12 @@ public class MainActivity extends DaggerActivity implements HasAndroidInjector {
         //this.callbackManagers = new List<CallbackManager>();
         super.onCreate(savedInstanceState);
 
-        overridePendingTransition(android.R.anim.fade_out, android.R.anim.fade_in);
 
         setContentView(R.layout.activity_main);
 
         Log.i(TAG, "onCreate: in MainActivity. Change so that login works again.");
-        //facebookLogin.prepare(this);
-        //googleLoginMethod.prepare(this);
+        facebookLogin.prepare(this);
+        googleLoginMethod.prepare(this);
     }
 
     @Override

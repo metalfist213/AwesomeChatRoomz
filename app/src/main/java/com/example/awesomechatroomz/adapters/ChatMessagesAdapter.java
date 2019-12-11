@@ -14,15 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.awesomechatroomz.R;
 import com.example.awesomechatroomz.implementations.ActiveChatInstance;
-import com.example.awesomechatroomz.implementations.ActiveChatManager;
 import com.example.awesomechatroomz.models.ChatRoom;
 import com.example.awesomechatroomz.models.ImageMessage;
 import com.example.awesomechatroomz.models.Message;
 import com.example.awesomechatroomz.models.TextMessage;
 import com.example.awesomechatroomz.models.User;
 import com.squareup.picasso.Picasso;
-
-import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 

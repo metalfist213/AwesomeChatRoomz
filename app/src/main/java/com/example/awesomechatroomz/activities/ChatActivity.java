@@ -87,7 +87,8 @@ public class ChatActivity extends AppCompatActivity implements HasAndroidInjecto
         layoutManager = new LinearLayoutManager(this);
 
         Uri data = getIntent().getData();
-        System.out.println("INTENT DATA: " + data);
+
+        getSupportActionBar().setTitle(getChatRoomName());
 
 
         loginManager.AttemptAutoLogin(new LoginManager.LoginCallback() {
@@ -97,7 +98,6 @@ public class ChatActivity extends AppCompatActivity implements HasAndroidInjecto
                 room.setName(getChatRoomName());
                 chatInstance = chatManager.create(room);
                 adapter.setActiveInstance(chatInstance);
-                System.out.println("Attempt Login");
 
                 //Adapter must subscribe from main thread.
                 new Handler(getApplicationContext().getMainLooper()).post(new Runnable() {

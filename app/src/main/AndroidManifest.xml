@@ -11,7 +11,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/ic_acr_app_icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
@@ -32,7 +32,8 @@
             </intent-filter>
 
         </activity>
-        <activity android:name=".activities.MainActivity" />
+        <activity android:name=".activities.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.ChatMenuActivity"
             android:label="@string/title_activity_chat_menu"

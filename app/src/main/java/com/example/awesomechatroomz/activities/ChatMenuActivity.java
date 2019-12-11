@@ -19,6 +19,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.transition.Fade;
+import androidx.transition.Transition;
 
 import android.util.Log;
 import android.view.View;
@@ -51,9 +53,9 @@ public class ChatMenuActivity extends DaggerActivity implements HasAndroidInject
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
-        overridePendingTransition(android.R.anim.fade_out, android.R.anim.fade_in);
 
         setContentView(R.layout.activity_chat_menu);
         recyclerView = findViewById(R.id.chat_room_recycler_view);
