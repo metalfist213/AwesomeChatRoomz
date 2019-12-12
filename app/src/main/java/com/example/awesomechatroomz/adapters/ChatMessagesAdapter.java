@@ -29,6 +29,10 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapte
 
     private static final String TAG = "ChatMessagesAdapter";
 
+    /**
+     * Sets the instance that the adapter listens to.
+     * @param activeChatInstance
+     */
     public void setActiveInstance(ActiveChatInstance activeChatInstance) {
         Log.d(TAG, "setActiveInstance() called with: activeChatInstance.room = [" + activeChatInstance.getActiveChatRoom() + "]");
         this.activeChatInstance = activeChatInstance;
@@ -69,7 +73,7 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapte
 
     }
 
-    public void prepare(final ChatMessagesAdapterListener event) {
+    private void prepare(final ChatMessagesAdapterListener event) {
         LiveData<ChatRoom> room = activeChatInstance.getChatRoomData();
         Log.d(TAG, "prepare: Observers: "+room.hasActiveObservers());
 
