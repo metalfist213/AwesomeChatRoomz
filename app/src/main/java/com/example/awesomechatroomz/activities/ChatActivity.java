@@ -18,10 +18,10 @@ import com.example.awesomechatroomz.R;
 import com.example.awesomechatroomz.activities.fragments.UserChatInputFragment;
 import com.example.awesomechatroomz.adapters.ChatMessagesAdapter;
 import com.example.awesomechatroomz.components.LoginComponent;
-import com.example.awesomechatroomz.implementations.ActiveChatInstance;
-import com.example.awesomechatroomz.implementations.ActiveChatManager;
-import com.example.awesomechatroomz.implementations.ImageManager;
-import com.example.awesomechatroomz.implementations.LoginManager;
+import com.example.awesomechatroomz.domain.ActiveChatInstance;
+import com.example.awesomechatroomz.domain.ActiveChatManager;
+import com.example.awesomechatroomz.domain.ImageManager;
+import com.example.awesomechatroomz.domain.LoginManager;
 import com.example.awesomechatroomz.models.ChatRoom;
 import com.example.awesomechatroomz.models.User;
 import com.example.awesomechatroomz.services.ChatRoomSubscriptionService;
@@ -160,7 +160,7 @@ public class ChatActivity extends AppCompatActivity implements HasAndroidInjecto
                 requestedSubscribe = true;
                 return;
             }
-            AlertDialog subscribeDialog = new AlertDialog.Builder(this).setTitle("Subscribe?").setMessage("Do you want to receive notifications, when new messages arrive?")
+            new AlertDialog.Builder(this).setTitle("Subscribe?").setMessage("Do you want to receive notifications, when new messages arrive?")
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

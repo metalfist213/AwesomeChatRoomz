@@ -1,4 +1,4 @@
-package com.example.awesomechatroomz.implementations;
+package com.example.awesomechatroomz.domain;
 
 import android.content.Intent;
 

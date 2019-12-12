@@ -1,4 +1,4 @@
-package com.example.awesomechatroomz.implementations;
+package com.example.awesomechatroomz.domain;
 
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -20,6 +20,10 @@ import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
+/**
+ * Manages the login of the user.
+ * Can also register.
+ */
 public class LoginManager {
 
     private DatabaseReference database;
@@ -36,6 +40,11 @@ public class LoginManager {
         this.loggedInUser = loggedInUser;
     }
 
+    /**
+     * Attempts to login using a saved model of the user.
+     * @param callback, Callback on results.
+     * Passes a user back, if found.
+     */
     public void AttemptAutoLogin(final LoginCallback callback) {
         Executors.newSingleThreadExecutor().submit(new Runnable() {
             @Override

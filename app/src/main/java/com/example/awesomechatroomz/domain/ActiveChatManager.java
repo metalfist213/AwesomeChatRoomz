@@ -1,4 +1,4 @@
-package com.example.awesomechatroomz.implementations;
+package com.example.awesomechatroomz.domain;
 
 import android.util.Log;
 
@@ -32,6 +32,11 @@ public class ActiveChatManager {
         return subscribedTo.contains(room);
     }
 
+    /**
+     * Creates a new instance. Has the responsibility of communication to the database.
+     * @param room
+     * @return newly created instances.
+     */
     public ActiveChatInstance create(ChatRoom room) {
         Log.d(TAG, "create() called with: room = [" + room + "]");
         ActiveChatInstance instance = new ActiveChatInstance(reference, loggedInUser, imageManager);
@@ -39,7 +44,10 @@ public class ActiveChatManager {
         return instance;
     }
 
-
+    /**
+     * Gets the list of chat instances, the user has subscribed to.
+     * @return
+     */
     public List<ActiveChatInstance> getSubscribedTo() {
         return subscribedTo;
     }

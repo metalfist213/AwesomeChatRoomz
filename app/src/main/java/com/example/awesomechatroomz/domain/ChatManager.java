@@ -1,4 +1,4 @@
-package com.example.awesomechatroomz.implementations;
+package com.example.awesomechatroomz.domain;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;

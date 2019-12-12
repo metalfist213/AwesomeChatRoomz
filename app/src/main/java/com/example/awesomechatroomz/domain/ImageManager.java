@@ -1,4 +1,4 @@
-package com.example.awesomechatroomz.implementations;
+package com.example.awesomechatroomz.domain;
 
 import android.graphics.Bitmap;
 import android.net.Uri;

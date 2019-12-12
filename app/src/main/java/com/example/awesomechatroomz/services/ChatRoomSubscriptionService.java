@@ -16,8 +16,8 @@ import androidx.core.app.NotificationCompat;
 
 import com.example.awesomechatroomz.R;
 import com.example.awesomechatroomz.activities.ChatActivity;
-import com.example.awesomechatroomz.implementations.ActiveChatInstance;
-import com.example.awesomechatroomz.implementations.ActiveChatManager;
+import com.example.awesomechatroomz.domain.ActiveChatInstance;
+import com.example.awesomechatroomz.domain.ActiveChatManager;
 import com.example.awesomechatroomz.models.ChatRoom;
 import com.example.awesomechatroomz.models.Message;
 import com.example.awesomechatroomz.models.TextMessage;
