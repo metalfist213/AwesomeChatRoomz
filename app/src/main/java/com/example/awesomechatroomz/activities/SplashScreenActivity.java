@@ -6,7 +6,7 @@ import android.view.Window;
 
 import com.example.awesomechatroomz.R;
 import com.example.awesomechatroomz.components.LoginComponent;
-import com.example.awesomechatroomz.implementations.LoginManager;
+import com.example.awesomechatroomz.domain.LoginManager;
 import com.example.awesomechatroomz.models.User;
 
 import javax.inject.Inject;

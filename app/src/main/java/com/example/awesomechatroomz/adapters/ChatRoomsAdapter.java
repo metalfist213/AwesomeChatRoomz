@@ -11,7 +11,7 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.awesomechatroomz.R;
-import com.example.awesomechatroomz.implementations.ChatManager;
+import com.example.awesomechatroomz.domain.ChatManager;
 import com.example.awesomechatroomz.models.ChatRoom;
 
 import java.util.List;
