@@ -10,7 +10,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.awesomechatroomz.R;
 import com.example.awesomechatroomz.adapters.ChatRoomsAdapter;
 import com.example.awesomechatroomz.components.LoginComponent;
-import com.example.awesomechatroomz.domain.LoginManager;
+import com.example.awesomechatroomz.repository.LoginManager;
 import com.example.awesomechatroomz.models.ChatRoom;
 
 import javax.inject.Inject;

@@ -12,7 +12,7 @@ import com.example.awesomechatroomz.R;
 import com.example.awesomechatroomz.components.LoginComponent;
 import com.example.awesomechatroomz.domain.FacebookLoginMethod;
 import com.example.awesomechatroomz.domain.GoogleLoginMethod;
-import com.example.awesomechatroomz.domain.LoginManager;
+import com.example.awesomechatroomz.repository.LoginManager;
 import com.example.awesomechatroomz.interfaces.AsyncTaskCallback;
 import com.example.awesomechatroomz.models.User;
 import com.example.awesomechatroomz.room.SavedInstancesDatabase;

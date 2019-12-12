@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.example.awesomechatroomz.models.ChatRoom;
 import com.example.awesomechatroomz.models.LoggedInUser;
+import com.example.awesomechatroomz.repository.ActiveChatInstance;
+import com.example.awesomechatroomz.repository.ImageManager;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;

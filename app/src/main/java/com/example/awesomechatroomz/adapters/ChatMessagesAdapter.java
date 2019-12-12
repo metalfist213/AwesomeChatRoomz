@@ -13,7 +13,7 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.awesomechatroomz.R;
-import com.example.awesomechatroomz.domain.ActiveChatInstance;
+import com.example.awesomechatroomz.repository.ActiveChatInstance;
 import com.example.awesomechatroomz.models.ChatRoom;
 import com.example.awesomechatroomz.models.ImageMessage;
 import com.example.awesomechatroomz.models.Message;

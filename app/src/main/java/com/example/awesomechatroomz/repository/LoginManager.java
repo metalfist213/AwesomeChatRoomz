@@ -1,4 +1,4 @@
-package com.example.awesomechatroomz.domain;
+package com.example.awesomechatroomz.repository;
 
 import android.net.Uri;
 import android.os.AsyncTask;
